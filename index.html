@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   
   <style>
-    :root { --shopee-orange: #ee4d2d; --bg-light: #f5f5f5; --text-dark: #222; }
+    :root { --shopee-orange: #ee4d2d; --bg-light: #f5f5f5; --text-dark: #222; --green: #28a745; --red: #f44336; }
     * { box-sizing: border-box; }
     body { font-family: 'Roboto', sans-serif; background: var(--bg-light); margin:0; color: var(--text-dark); padding-bottom: 70px; }
 
@@ -18,6 +18,10 @@
       position: sticky; top:0; z-index: 1000; box-shadow: 0 1px 5px rgba(0,0,0,0.1);
     }
     .logo { color: var(--shopee-orange); font-weight: 800; font-size: 20px; text-decoration: none; }
+    #user-status { 
+      font-size: 12px; font-weight: bold; padding: 5px 10px; border-radius: 20px;
+      background: var(--shopee-orange); color: white; cursor: pointer;
+    }
 
     /* BANNER SLIDER */
     .banner-container { width: 100%; height: 180px; overflow: hidden; position: relative; }
@@ -50,19 +54,16 @@
 
     /* BOXES */
     .info-box { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    input, textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 4px; }
-    .btn-action { background: #28a745; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; }
+    input, textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+    .btn-action { background: var(--green); color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 5px; }
 
-    /* CART ITEM */
-    .cart-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 14px; }
-    .btn-del { color: red; border: none; background: none; cursor: pointer; }
+    /* ADMIN TOOLS */
+    .admin-prod-item { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; }
+    .admin-prod-item img { width: 40px; height: 40px; border-radius: 4px; margin-right: 10px; }
+    .btn-edit { background: #007bff; color: white; border: none; padding: 4px 8px; border-radius: 3px; font-size: 11px; margin-right: 5px; }
+    .btn-del-mini { background: var(--red); color: white; border: none; padding: 4px 8px; border-radius: 3px; font-size: 11px; }
 
-    /* ORDER CARDS */
-    .order-card { border: 1px solid #eee; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-size: 13px; }
-    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-    .st-menunggu { background: #fff3cd; color: #856404; }
-
-    /* BOTTOM NAV */
+    /* NAV */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; border-top: 1px solid #ddd; z-index: 1000; }
     .nav-item { flex: 1; text-align: center; padding: 12px; font-size: 11px; color: #666; text-decoration: none; cursor: pointer; }
     .nav-item.active { color: var(--shopee-orange); }
@@ -72,16 +73,16 @@
 
 <header>
   <a href="#" class="logo">OKTSHOP17</a>
-  <div id="user-status" style="font-size: 12px; color: #666;">Memuat...</div>
+  <div id="user-status" onclick="handleAuth()">Login / Daftar</div>
 </header>
 
 <!-- VIEW: HOME -->
 <div id="view-home" class="view-section active-view">
   <div class="banner-container">
     <div class="slides" id="mainSlider">
-      <div class="slide"><img src="https://via.placeholder.com/800x400?text=Promo+1"><div class="banner-text">Promo Hari Ini</div></div>
-      <div class="slide"><img src="https://via.placeholder.com/800x400?text=Promo+2"><div class="banner-text">Diskon Reseller</div></div>
-      <div class="slide"><img src="https://via.placeholder.com/800x400?text=Promo+3"><div class="banner-text">Gratis Ongkir</div></div>
+      <div class="slide"><img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=800&q=80"><div class="banner-text">Promo Hari Ini</div></div>
+      <div class="slide"><img src="https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=800&q=80"><div class="banner-text">Diskon Reseller</div></div>
+      <div class="slide"><img src="https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=800&q=80"><div class="banner-text">Gratis Ongkir</div></div>
     </div>
   </div>
 
@@ -117,22 +118,29 @@
       <button class="btn-action" onclick="updateProfile()">Simpan Profil</button>
     </div>
 
-    <div class="section-title">📦 Pesanan Saya</div>
-    <div id="userOrdersActive" class="info-box">Tidak ada pesanan</div>
-
     <!-- PANEL ADMIN (Hanya muncul jika role=admin) -->
-    <div id="admin-panel" style="display:none; border-top: 4px solid var(--shopee-orange); margin-top: 20px;">
-      <div class="section-title">Panel Admin</div>
+    <div id="admin-panel" style="display:none; border-top: 4px solid var(--shopee-orange); padding-top: 10px;">
+      <div class="section-title">🛠️ Kelola Katalog (Admin)</div>
       <div class="info-box">
-        <strong>Tambah Produk:</strong>
+        <strong id="admin-form-title">Tambah Produk Baru:</strong>
+        <input id="pId" type="hidden"> <!-- Hidden field untuk ID Edit -->
         <input id="pName" placeholder="Nama Produk">
-        <input id="pPrice" type="number" placeholder="Harga">
-        <input id="pImage" placeholder="URL Gambar">
-        <button class="btn-action" onclick="adminAddProduct()">Upload Produk</button>
+        <input id="pPrice" type="number" placeholder="Harga (Contoh: 150000)">
+        <input id="pImage" placeholder="URL Gambar (Link Foto)">
+        <button class="btn-action" id="btnAdminSubmit" onclick="adminSaveProduct()">Upload Produk</button>
+        <button id="btnCancelEdit" onclick="resetAdminForm()" style="display:none; width:100%; border:none; background:none; color:gray; font-size:12px; margin-top:5px; cursor:pointer;">Batal Edit</button>
+      </div>
+
+      <div class="info-box">
+        <strong>Daftar Stok Produk:</strong>
+        <div id="adminInventory" style="margin-top:10px;"></div>
       </div>
     </div>
 
-    <button onclick="logout()" style="background:#f44336; color:white; border:none; padding:10px; width:100%; border-radius:4px; margin-top:20px; font-weight:bold;">Logout</button>
+    <div class="section-title">📦 Pesanan Saya</div>
+    <div id="userOrdersActive" class="info-box">Tidak ada pesanan</div>
+
+    <button onclick="logout()" style="background:var(--red); color:white; border:none; padding:10px; width:100%; border-radius:4px; margin-top:20px; font-weight:bold;">Logout</button>
   </div>
 </div>
 
@@ -174,19 +182,21 @@ setInterval(() => {
   if(slider) slider.style.transform = `translateX(-${(currentSlide * 100) / 3}%)`;
 }, 5000);
 
-// --- 2. AUTH & ROLE SYSTEM ---
+// --- 2. AUTH & FIX SIMPAN PROFIL ---
 function handleAuth() {
+  if(auth.currentUser) return showView('profile', document.querySelectorAll('.nav-item')[2]);
   const email = prompt("Email:");
   const pass = prompt("Password (min 6 karakter):");
   if (email && pass) {
     auth.signInWithEmailAndPassword(email, pass).catch(err => {
       if (err.code === "auth/user-not-found") {
         auth.createUserWithEmailAndPassword(email, pass).then(res => {
-          db.collection("users").doc(res.user.uid).set({
+          // Gunakan set merge agar doc tercipta dengan aman
+          return db.collection("users").doc(res.user.uid).set({
             nama: email.split('@')[0], email: email, role: "pembeli", phone: "", address: ""
-          });
+          }, { merge: true });
         });
-      } else { alert("Login Gagal: " + err.message); }
+      } else { alert("Error: " + err.message); }
     });
   }
 }
@@ -196,36 +206,50 @@ auth.onAuthStateChanged(user => {
   const adminPanel = document.getElementById("admin-panel");
   if(user) {
     db.collection("users").doc(user.uid).onSnapshot(doc => {
-      const data = doc.data();
-      if(!data) return;
-      statusHead.innerText = "Halo, " + data.nama;
-      document.getElementById("display-name").innerText = data.nama;
-      document.getElementById("display-email").innerText = data.email;
+      const data = doc.data() || {};
+      statusHead.innerText = "Hi, " + (data.nama || "User");
+      statusHead.style.background = "#28a745"; // Berubah hijau jika login
+      document.getElementById("display-name").innerText = data.nama || "User";
+      document.getElementById("display-email").innerText = user.email;
       document.getElementById("updPhone").value = data.phone || "";
       document.getElementById("updAddress").value = data.address || "";
       
       if(data.role === "admin") {
         adminPanel.style.display = "block";
         document.getElementById("badge-role").innerText = "(ADMIN)";
+        loadAdminInventory();
       } else {
         adminPanel.style.display = "none";
-        document.getElementById("badge-role").innerText = "";
       }
     });
     loadCart(user.uid);
     loadUserOrders(user.uid);
   } else {
-    statusHead.innerText = "Belum Login";
+    statusHead.innerText = "Login / Daftar";
+    statusHead.style.background = "#ee4d2d";
     adminPanel.style.display = "none";
   }
 });
 
-// --- 3. KATALOG ---
+// Perbaikan Update Profile (Menggunakan Set Merge agar tidak error jika doc belum ada)
+function updateProfile() {
+  const user = auth.currentUser;
+  if(!user) return;
+  db.collection("users").doc(user.uid).set({
+    phone: document.getElementById("updPhone").value,
+    address: document.getElementById("updAddress").value
+  }, { merge: true }).then(() => {
+    alert("Profil Berhasil Diperbarui!");
+  }).catch(err => alert("Gagal simpan: " + err.message));
+}
+
+// --- 3. KATALOG & ADMIN UPDATES ---
 function loadKatalog() {
-  db.collection("produk").onSnapshot(snap => {
+  db.collection("produk").orderBy("nama", "asc").onSnapshot(snap => {
     allProducts = [];
     snap.forEach(doc => allProducts.push({id: doc.id, ...doc.data()}));
     renderKatalog();
+    if(auth.currentUser) loadAdminInventory();
   });
 }
 
@@ -248,6 +272,81 @@ function renderKatalog() {
 
 function toggleKatalog() { showAll = !showAll; renderKatalog(); }
 
+// FUNGSI ADMIN: SIMPAN/UPDATE PRODUK
+function adminSaveProduct() {
+  const id = document.getElementById("pId").value;
+  const data = {
+    nama: document.getElementById("pName").value,
+    harga: parseInt(document.getElementById("pPrice").value),
+    gambar: document.getElementById("pImage").value
+  };
+
+  if(!data.nama || !data.harga) return alert("Nama dan Harga wajib diisi!");
+
+  if(id) {
+    // Update existing
+    db.collection("produk").doc(id).update(data).then(() => {
+      alert("Produk Berhasil Diupdate!");
+      resetAdminForm();
+    });
+  } else {
+    // Add new
+    db.collection("produk").add(data).then(() => {
+      alert("Produk Berhasil Ditambah!");
+      resetAdminForm();
+    });
+  }
+}
+
+function loadAdminInventory() {
+  const invDiv = document.getElementById("adminInventory");
+  if(!invDiv) return;
+  let h = "";
+  allProducts.forEach(p => {
+    h += `<div class="admin-prod-item">
+      <div style="display:flex; align-items:center;">
+        <img src="${p.gambar || 'https://via.placeholder.com/50'}">
+        <div>
+          <div style="font-size:13px; font-weight:bold;">${p.nama}</div>
+          <div style="font-size:12px; color:var(--shopee-orange)">${formatRp(p.harga)}</div>
+        </div>
+      </div>
+      <div>
+        <button class="btn-edit" onclick="editProduct('${p.id}', '${p.nama}', ${p.harga}, '${p.gambar}')">Edit</button>
+        <button class="btn-del-mini" onclick="deleteProduct('${p.id}')">Hapus</button>
+      </div>
+    </div>`;
+  });
+  invDiv.innerHTML = h || "Stok kosong";
+}
+
+function editProduct(id, nama, harga, gambar) {
+  document.getElementById("pId").value = id;
+  document.getElementById("pName").value = nama;
+  document.getElementById("pPrice").value = harga;
+  document.getElementById("pImage").value = gambar;
+  document.getElementById("admin-form-title").innerText = "Edit Produk:";
+  document.getElementById("btnAdminSubmit").innerText = "Simpan Perubahan";
+  document.getElementById("btnCancelEdit").style.display = "block";
+  document.getElementById("view-profile").scrollTo(0,0);
+}
+
+function deleteProduct(id) {
+  if(confirm("Hapus produk ini dari katalog?")) {
+    db.collection("produk").doc(id).delete();
+  }
+}
+
+function resetAdminForm() {
+  document.getElementById("pId").value = "";
+  document.getElementById("pName").value = "";
+  document.getElementById("pPrice").value = "";
+  document.getElementById("pImage").value = "";
+  document.getElementById("admin-form-title").innerText = "Tambah Produk Baru:";
+  document.getElementById("btnAdminSubmit").innerText = "Upload Produk";
+  document.getElementById("btnCancelEdit").style.display = "none";
+}
+
 // --- 4. KERANJANG ---
 function addToCart(id, nama, harga) {
   const user = auth.currentUser;
@@ -255,7 +354,7 @@ function addToCart(id, nama, harga) {
   db.collection("cart").doc(user.uid).collection("items").add({
     nama: nama, harga: harga, time: new Date()
   });
-  alert("Ditambah ke keranjang!");
+  alert("Masuk keranjang!");
 }
 
 function loadCart(uid) {
@@ -291,34 +390,8 @@ async function checkout() {
   });
 
   const pesanWA = `Halo Admin OKTSHOP17, saya mau pesan:\n\n${listTxt}\nTotal: *${formatRp(total)}*`;
-  
-  db.collection("orders").add({
-    userId: user.uid, total: total, status: "Menunggu", time: new Date()
-  });
-
+  db.collection("orders").add({ userId: user.uid, total: total, status: "Menunggu", time: new Date() });
   window.open(`https://wa.me/62895345452412?text=${encodeURIComponent(pesanWA)}`, "_blank");
-}
-
-// --- 5. ADMIN & PROFIL ---
-function adminAddProduct() {
-  const nama = document.getElementById("pName").value;
-  const harga = parseInt(document.getElementById("pPrice").value);
-  const gambar = document.getElementById("pImage").value;
-  if(!nama || !harga) return alert("Isi data produk!");
-  
-  db.collection("produk").add({ nama, harga, gambar }).then(() => {
-    alert("Produk berhasil diupload!");
-    document.getElementById("pName").value = "";
-    document.getElementById("pPrice").value = "";
-    document.getElementById("pImage").value = "";
-  });
-}
-
-function updateProfile() {
-  db.collection("users").doc(auth.currentUser.uid).update({
-    phone: document.getElementById("updPhone").value,
-    address: document.getElementById("updAddress").value
-  }).then(() => alert("Profil disimpan!"));
 }
 
 function loadUserOrders(uid) {
@@ -326,7 +399,7 @@ function loadUserOrders(uid) {
     let h = ""; 
     snap.forEach(doc => {
       const o = doc.data();
-      h += `<div class="order-card"><span class="status-badge st-menunggu">${o.status}</span><br>Total: ${formatRp(o.total)}</div>`;
+      h += `<div class="order-card"><span class="status-badge" style="background:#fff3cd; color:#856404;">${o.status}</span><br>Total: ${formatRp(o.total)}</div>`;
     });
     document.getElementById("userOrdersActive").innerHTML = h || "Tidak ada pesanan";
   });
