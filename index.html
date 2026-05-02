@@ -7,66 +7,50 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   
   <style>
-    :root { --shopee-orange: #ee4d2d; --bg-light: #f5f5f5; --text-dark: #222; --green: #28a745; --red: #f44336; }
+    :root { --shopee-orange: #ee4d2d; --bg-light: #f5f5f5; --text-dark: #222; --green: #28a745; --red: #f44336; --blue: #007bff; }
     * { box-sizing: border-box; }
     body { font-family: 'Roboto', sans-serif; background: var(--bg-light); margin:0; color: var(--text-dark); padding-bottom: 70px; }
 
-    /* HEADER */
     header { 
       background: white; padding: 10px 15px; 
       display: flex; justify-content: space-between; align-items: center;
       position: sticky; top:0; z-index: 1000; box-shadow: 0 1px 5px rgba(0,0,0,0.1);
     }
     .logo { color: var(--shopee-orange); font-weight: 800; font-size: 20px; text-decoration: none; }
-    #user-status { 
-      font-size: 12px; font-weight: bold; padding: 5px 10px; border-radius: 20px;
-      background: var(--shopee-orange); color: white; cursor: pointer;
-    }
-
-    /* BANNER SLIDER */
-    .banner-container { width: 100%; height: 180px; overflow: hidden; position: relative; }
-    .slides { display: flex; width: 300%; height: 100%; transition: transform 0.5s ease-in-out; }
-    .slide { width: 100%; height: 100%; position: relative; }
-    .slide img { width: 100%; height: 100%; object-fit: cover; }
-    .banner-text { position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
+    #user-status { font-size: 12px; font-weight: bold; padding: 5px 10px; border-radius: 20px; background: var(--shopee-orange); color: white; cursor: pointer; }
 
     .container { max-width: 800px; margin: auto; padding: 10px; }
-
-    /* KATALOG */
-    .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .card { background: white; border-radius: 4px; overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; }
-    .card img { width: 100%; height: 160px; object-fit: cover; }
-    .card-info { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; }
-    .card-title { font-size: 14px; height: 36px; overflow: hidden; margin-bottom: 5px; font-weight: 400; }
-    .card-price { color: var(--shopee-orange); font-size: 16px; font-weight: bold; margin-bottom: 10px; }
-    .btn-buy { background: var(--shopee-orange); color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; }
-
-    .view-more-btn { 
-      background: white; color: var(--shopee-orange); border: 1px solid var(--shopee-orange);
-      width: 100%; padding: 10px; margin-top: 15px; border-radius: 4px; font-weight: bold; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
-
-    /* SECTIONS */
     .view-section { display: none; }
     .active-view { display: block; }
     .section-title { font-size: 16px; font-weight: bold; margin: 15px 0 10px; border-left: 4px solid var(--shopee-orange); padding-left: 10px; }
-
-    /* BOXES */
     .info-box { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    input, textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
-    .btn-action { background: var(--green); color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 5px; }
 
-    /* ADMIN TOOLS */
-    .admin-prod-item { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; }
-    .admin-prod-item img { width: 40px; height: 40px; border-radius: 4px; margin-right: 10px; }
-    .btn-edit { background: #007bff; color: white; border: none; padding: 4px 8px; border-radius: 3px; font-size: 11px; margin-right: 5px; }
-    .btn-del-mini { background: var(--red); color: white; border: none; padding: 4px 8px; border-radius: 3px; font-size: 11px; }
+    /* PRODUK GRID */
+    .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .card { background: white; border-radius: 4px; overflow: hidden; border: 1px solid #eee; }
+    .card img { width: 100%; height: 160px; object-fit: cover; }
+    .card-info { padding: 10px; }
+    .card-title { font-size: 14px; height: 36px; overflow: hidden; margin-bottom: 5px; }
+    .card-price { color: var(--shopee-orange); font-size: 16px; font-weight: bold; }
+    .btn-buy { background: var(--shopee-orange); color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 5px; }
 
+    /* BUTTONS & SELECTIONS */
+    .method-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-bottom: 10px; }
+    .btn-sel { border: 1px solid #ddd; padding: 10px; border-radius: 5px; background: white; cursor: pointer; text-align: center; font-size: 12px; }
+    .btn-sel.active { border-color: var(--shopee-orange); color: var(--shopee-orange); background: #fff5f2; }
+    .btn-action { background: var(--green); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; }
+    
+    /* ORDERS */
+    .order-card { border: 1px solid #eee; padding: 10px; margin-bottom: 10px; border-radius: 5px; position: relative; }
+    .status-badge { font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    
     /* NAV */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; border-top: 1px solid #ddd; z-index: 1000; }
-    .nav-item { flex: 1; text-align: center; padding: 12px; font-size: 11px; color: #666; text-decoration: none; cursor: pointer; }
+    .nav-item { flex: 1; text-align: center; padding: 12px; font-size: 11px; color: #666; cursor: pointer; }
     .nav-item.active { color: var(--shopee-orange); }
+
+    /* LOADER */
+    #loader { display:none; color: var(--shopee-orange); font-weight: bold; font-size: 12px; }
   </style>
 </head>
 <body>
@@ -78,18 +62,9 @@
 
 <!-- VIEW: HOME -->
 <div id="view-home" class="view-section active-view">
-  <div class="banner-container">
-    <div class="slides" id="mainSlider">
-      <div class="slide"><img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=800&q=80"><div class="banner-text">Promo Hari Ini</div></div>
-      <div class="slide"><img src="https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=800&q=80"><div class="banner-text">Diskon Reseller</div></div>
-      <div class="slide"><img src="https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=800&q=80"><div class="banner-text">Gratis Ongkir</div></div>
-    </div>
-  </div>
-
   <div class="container">
     <div class="section-title">Katalog Produk</div>
     <div id="listProduk" class="product-grid"></div>
-    <button id="btnShowMore" class="view-more-btn" onclick="toggleKatalog()">Lihat Semua Produk <span>▼</span></button>
   </div>
 </div>
 
@@ -98,10 +73,36 @@
   <div class="container">
     <div class="section-title">Keranjang Saya</div>
     <div class="info-box">
-      <div id="cartItems">Memuat keranjang...</div>
+      <div id="cartItems">Memuat...</div>
       <hr>
-      <div id="cartTotal" style="font-weight:bold; color:var(--shopee-orange); text-align:right; margin: 10px 0;">Total: Rp0</div>
-      <button class="btn-action" onclick="checkout()" style="background:var(--shopee-orange)">Checkout via WhatsApp</button>
+      <div id="cartTotal" style="font-weight:bold; color:var(--shopee-orange); text-align:right; margin-bottom:10px;">Total: Rp0</div>
+      
+      <p><b>Pilih Pembayaran:</b></p>
+      <div class="method-grid">
+        <div class="btn-sel" id="pay-transfer" onclick="setPayment('Transfer Bank')">Transfer Bank</div>
+        <div class="btn-sel" id="pay-cod" onclick="setPayment('COD')">COD</div>
+      </div>
+
+      <div id="box-transfer" style="display:none;" class="info-box">
+        <p style="font-size:13px; margin:0;">Silahkan transfer ke:</p>
+        <strong id="admin-bank-info">Loading Rekening...</strong>
+      </div>
+
+      <div id="box-cod" style="display:none;" class="info-box">
+        <input id="codAddress" placeholder="Alamat Lengkap COD">
+        <label style="font-size:12px;">Jam Pengiriman:</label>
+        <input type="time" id="codTime">
+      </div>
+
+      <p><b>Pilih Pengiriman:</b></p>
+      <div class="method-grid">
+        <div class="btn-sel ship-btn" onclick="setShipping('JNT', this)">JNT</div>
+        <div class="btn-sel ship-btn" onclick="setShipping('JNE', this)">JNE</div>
+        <div class="btn-sel ship-btn" onclick="setShipping('Sicepat', this)">Sicepat</div>
+        <div class="btn-sel ship-btn" onclick="setShipping('Ojek Online', this)">Ojek Online</div>
+      </div>
+
+      <button class="btn-action" onclick="checkout()">Selesaikan Pesanan</button>
     </div>
   </div>
 </div>
@@ -110,310 +111,267 @@
 <div id="view-profile" class="view-section">
   <div class="container">
     <div class="info-box">
-      <h3 style="margin:0;"><span id="display-name">User</span> <small id="badge-role" style="color:var(--shopee-orange)"></small></h3>
-      <p id="display-email" style="color:#666; font-size:14px; margin:5px 0;"></p>
-      <hr>
-      <label>No HP:</label><input id="updPhone" placeholder="Contoh: 0812345678">
-      <label>Alamat:</label><textarea id="updAddress" rows="2" placeholder="Alamat lengkap"></textarea>
-      <button class="btn-action" onclick="updateProfile()">Simpan Profil</button>
+      <h3 id="display-name">User</h3>
+      <p id="display-email" style="font-size:12px; color:#666;"></p>
+      <button onclick="logout()" style="color:red; border:none; background:none; padding:0; cursor:pointer;">Keluar Akun</button>
     </div>
 
-    <!-- PANEL ADMIN (Hanya muncul jika role=admin) -->
-    <div id="admin-panel" style="display:none; border-top: 4px solid var(--shopee-orange); padding-top: 10px;">
-      <div class="section-title">🛠️ Kelola Katalog (Admin)</div>
+    <!-- PANEL ADMIN -->
+    <div id="admin-panel" style="display:none;">
+      <div class="section-title">🛠️ Admin - Kelola Katalog</div>
       <div class="info-box">
-        <strong id="admin-form-title">Tambah Produk Baru:</strong>
-        <input id="pId" type="hidden"> <!-- Hidden field untuk ID Edit -->
+        <input id="pId" type="hidden">
         <input id="pName" placeholder="Nama Produk">
-        <input id="pPrice" type="number" placeholder="Harga (Contoh: 150000)">
-        <input id="pImage" placeholder="URL Gambar (Link Foto)">
-        <button class="btn-action" id="btnAdminSubmit" onclick="adminSaveProduct()">Upload Produk</button>
-        <button id="btnCancelEdit" onclick="resetAdminForm()" style="display:none; width:100%; border:none; background:none; color:gray; font-size:12px; margin-top:5px; cursor:pointer;">Batal Edit</button>
+        <input id="pPrice" type="number" placeholder="Harga">
+        <label style="font-size:12px; display:block; margin-top:5px;">Foto Produk:</label>
+        <input type="file" id="pFile" accept="image/*" style="border:none; padding:5px 0;">
+        <div id="loader">Sedang mengupload gambar...</div>
+        <button class="btn-action" id="btnAdminSubmit" onclick="adminSaveProduct()" style="background:var(--blue)">Upload Produk</button>
       </div>
 
+      <div class="section-title">🛠️ Admin - Update Menu Pembayaran</div>
       <div class="info-box">
-        <strong>Daftar Stok Produk:</strong>
-        <div id="adminInventory" style="margin-top:10px;"></div>
+        <input id="setBank" placeholder="Nama Bank & No Rekening">
+        <button class="btn-action" onclick="updateBankSettings()" style="background:var(--blue)">Simpan Rekening</button>
       </div>
+
+      <div class="section-title">🛠️ Admin - Daftar Pesanan Masuk</div>
+      <div id="adminOrders" class="info-box">Belum ada pesanan masuk</div>
     </div>
 
     <div class="section-title">📦 Pesanan Saya</div>
-    <div id="userOrdersActive" class="info-box">Tidak ada pesanan</div>
-
-    <button onclick="logout()" style="background:var(--red); color:white; border:none; padding:10px; width:100%; border-radius:4px; margin-top:20px; font-weight:bold;">Logout</button>
+    <div id="userOrders" class="info-box">Belum ada pesanan</div>
   </div>
 </div>
 
-<!-- NAV -->
 <div class="bottom-nav">
   <div class="nav-item active" onclick="showView('home', this)">🏠<br>Beranda</div>
   <div class="nav-item" onclick="showView('cart', this)">🛒<br>Keranjang</div>
   <div class="nav-item" onclick="showView('profile', this)">👤<br>Profil</div>
 </div>
 
+<!-- SDK FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
 <script>
-// --- CONFIG FIREBASE ---
 const firebaseConfig = {
   apiKey: "AIzaSyBIEWYrwHKFaDMDM6hs-1iE_OxPCmjtoFA",
   authDomain: "toko-online-oktshop17.firebaseapp.com",
-  databaseURL: "https://toko-online-oktshop17-default-rtdb.firebaseio.com",
   projectId: "toko-online-oktshop17",
-  storageBucket: "toko-online-oktshop17.firebasestorage.app",
+  storageBucket: "toko-online-oktshop17.appspot.com",
   messagingSenderId: "191593492765",
-  appId: "1:191593492765:web:673089bd829250865ff1f4",
-  measurementId: "G-T4Y1YZXH8V"
+  appId: "1:191593492765:web:673089bd829250865ff1f4"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
+const storage = firebase.storage();
 
-let allProducts = [];
-let showAll = false;
+let selectedPayment = "";
+let selectedShipping = "";
 
-// --- 1. SLIDER ---
-let currentSlide = 0;
-setInterval(() => {
-  currentSlide = (currentSlide + 1) % 3;
-  const slider = document.getElementById('mainSlider');
-  if(slider) slider.style.transform = `translateX(-${(currentSlide * 100) / 3}%)`;
-}, 5000);
+// --- 1. CORE AUTH & VIEW ---
+function showView(viewId, el) {
+  document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('view-' + viewId).classList.add('active-view');
+  if(el) el.classList.add('active');
+  if(viewId === 'profile' && !auth.currentUser) handleAuth();
+}
 
-// --- 2. AUTH & FIX SIMPAN PROFIL ---
 function handleAuth() {
-  if(auth.currentUser) return showView('profile', document.querySelectorAll('.nav-item')[2]);
   const email = prompt("Email:");
-  const pass = prompt("Password (min 6 karakter):");
-  if (email && pass) {
-    auth.signInWithEmailAndPassword(email, pass).catch(err => {
-      if (err.code === "auth/user-not-found") {
-        auth.createUserWithEmailAndPassword(email, pass).then(res => {
-          // Gunakan set merge agar doc tercipta dengan aman
-          return db.collection("users").doc(res.user.uid).set({
-            nama: email.split('@')[0], email: email, role: "pembeli", phone: "", address: ""
-          }, { merge: true });
-        });
-      } else { alert("Error: " + err.message); }
+  const pass = prompt("Password:");
+  if(email && pass) {
+    auth.signInWithEmailAndPassword(email, pass).catch(() => {
+      auth.createUserWithEmailAndPassword(email, pass).then(res => {
+        db.collection("users").doc(res.user.uid).set({ nama: email.split('@')[0], role: "pembeli" });
+      });
     });
   }
 }
 
 auth.onAuthStateChanged(user => {
-  const statusHead = document.getElementById("user-status");
-  const adminPanel = document.getElementById("admin-panel");
   if(user) {
     db.collection("users").doc(user.uid).onSnapshot(doc => {
-      const data = doc.data() || {};
-      statusHead.innerText = "Hi, " + (data.nama || "User");
-      statusHead.style.background = "#28a745"; // Berubah hijau jika login
+      const data = doc.data();
       document.getElementById("display-name").innerText = data.nama || "User";
       document.getElementById("display-email").innerText = user.email;
-      document.getElementById("updPhone").value = data.phone || "";
-      document.getElementById("updAddress").value = data.address || "";
-      
       if(data.role === "admin") {
-        adminPanel.style.display = "block";
-        document.getElementById("badge-role").innerText = "(ADMIN)";
-        loadAdminInventory();
-      } else {
-        adminPanel.style.display = "none";
+        document.getElementById("admin-panel").style.display = "block";
+        loadAdminOrders();
       }
     });
     loadCart(user.uid);
     loadUserOrders(user.uid);
-  } else {
-    statusHead.innerText = "Login / Daftar";
-    statusHead.style.background = "#ee4d2d";
-    adminPanel.style.display = "none";
   }
 });
 
-// Perbaikan Update Profile (Menggunakan Set Merge agar tidak error jika doc belum ada)
-function updateProfile() {
-  const user = auth.currentUser;
-  if(!user) return;
-  db.collection("users").doc(user.uid).set({
-    phone: document.getElementById("updPhone").value,
-    address: document.getElementById("updAddress").value
-  }, { merge: true }).then(() => {
-    alert("Profil Berhasil Diperbarui!");
-  }).catch(err => alert("Gagal simpan: " + err.message));
+// --- 2. LOGIKA PRODUK & STORAGE (Akses Galeri) ---
+async function adminSaveProduct() {
+  const name = document.getElementById("pName").value;
+  const price = parseInt(document.getElementById("pPrice").value);
+  const file = document.getElementById("pFile").files[0];
+  const loader = document.getElementById("loader");
+
+  if(!name || !price) return alert("Isi data!");
+  
+  let imgUrl = "";
+  if(file) {
+    loader.style.display = "block";
+    const ref = storage.ref('produk/' + Date.now() + "_" + file.name);
+    await ref.put(file);
+    imgUrl = await ref.getDownloadURL();
+    loader.style.display = "none";
+  }
+
+  db.collection("produk").add({ nama: name, harga: price, gambar: imgUrl })
+    .then(() => { alert("Berhasil!"); location.reload(); });
 }
 
-// --- 3. KATALOG & ADMIN UPDATES ---
 function loadKatalog() {
-  db.collection("produk").orderBy("nama", "asc").onSnapshot(snap => {
-    allProducts = [];
-    snap.forEach(doc => allProducts.push({id: doc.id, ...doc.data()}));
-    renderKatalog();
-    if(auth.currentUser) loadAdminInventory();
+  db.collection("produk").onSnapshot(snap => {
+    const list = document.getElementById("listProduk");
+    list.innerHTML = "";
+    snap.forEach(doc => {
+      const p = doc.data();
+      list.innerHTML += `<div class="card">
+        <img src="${p.gambar || 'https://via.placeholder.com/150'}">
+        <div class="card-info">
+          <div class="card-title">${p.nama}</div>
+          <div class="card-price">Rp${p.harga.toLocaleString()}</div>
+          <button class="btn-buy" onclick="addToCart('${doc.id}','${p.nama}',${p.harga})">Beli</button>
+        </div>
+      </div>`;
+    });
   });
 }
 
-function renderKatalog() {
-  const list = document.getElementById("listProduk");
-  const limit = showAll ? allProducts.length : 4;
-  list.innerHTML = "";
-  for(let i=0; i<limit && i<allProducts.length; i++) {
-    let p = allProducts[i];
-    list.innerHTML += `<div class="card">
-      <img src="${p.gambar || 'https://via.placeholder.com/200'}">
-      <div class="card-info">
-        <div class="card-title">${p.nama}</div>
-        <div class="card-price">${formatRp(p.harga)}</div>
-        <button class="btn-buy" onclick="addToCart('${p.id}', '${p.nama}', ${p.harga})">➕ Keranjang</button>
-      </div>
-    </div>`;
+// --- 3. CHECKOUT & PEMBAYARAN ---
+function setPayment(m) {
+  selectedPayment = m;
+  document.getElementById('pay-transfer').classList.toggle('active', m === 'Transfer Bank');
+  document.getElementById('pay-cod').classList.toggle('active', m === 'COD');
+  document.getElementById('box-transfer').style.display = (m === 'Transfer Bank') ? 'block' : 'none';
+  document.getElementById('box-cod').style.display = (m === 'COD') ? 'block' : 'none';
+  
+  if(m === 'Transfer Bank') {
+    db.collection("settings").doc("bank").get().then(doc => {
+      document.getElementById("admin-bank-info").innerText = doc.data()?.info || "Belum diatur";
+    });
   }
 }
 
-function toggleKatalog() { showAll = !showAll; renderKatalog(); }
+function setShipping(m, el) {
+  selectedShipping = m;
+  document.querySelectorAll('.ship-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
 
-// FUNGSI ADMIN: SIMPAN/UPDATE PRODUK
-function adminSaveProduct() {
-  const id = document.getElementById("pId").value;
-  const data = {
-    nama: document.getElementById("pName").value,
-    harga: parseInt(document.getElementById("pPrice").value),
-    gambar: document.getElementById("pImage").value
+async function checkout() {
+  const user = auth.currentUser;
+  if(!selectedPayment || !selectedShipping) return alert("Pilih metode pembayaran & pengiriman!");
+  
+  const cartSnap = await db.collection("cart").doc(user.uid).collection("items").get();
+  if(cartSnap.empty) return alert("Keranjang kosong!");
+
+  let items = []; let total = 0;
+  cartSnap.forEach(d => {
+    items.push(d.data().nama);
+    total += d.data().harga;
+  });
+
+  const orderData = {
+    userId: user.uid,
+    userName: document.getElementById("display-name").innerText,
+    produk: items,
+    total: total,
+    pembayaran: selectedPayment,
+    pengiriman: selectedShipping,
+    status: "Dalam Proses",
+    waktu: new Date(),
+    detailCOD: selectedPayment === 'COD' ? {
+      alamat: document.getElementById("codAddress").value,
+      jam: document.getElementById("codTime").value
+    } : null
   };
 
-  if(!data.nama || !data.harga) return alert("Nama dan Harga wajib diisi!");
-
-  if(id) {
-    // Update existing
-    db.collection("produk").doc(id).update(data).then(() => {
-      alert("Produk Berhasil Diupdate!");
-      resetAdminForm();
-    });
-  } else {
-    // Add new
-    db.collection("produk").add(data).then(() => {
-      alert("Produk Berhasil Ditambah!");
-      resetAdminForm();
-    });
-  }
+  db.collection("orders").add(orderData).then(() => {
+    // Bersihkan keranjang
+    cartSnap.forEach(d => d.ref.delete());
+    alert("Pesanan Berhasil!");
+    showView('profile');
+  });
 }
 
-function loadAdminInventory() {
-  const invDiv = document.getElementById("adminInventory");
-  if(!invDiv) return;
-  let h = "";
-  allProducts.forEach(p => {
-    h += `<div class="admin-prod-item">
-      <div style="display:flex; align-items:center;">
-        <img src="${p.gambar || 'https://via.placeholder.com/50'}">
-        <div>
-          <div style="font-size:13px; font-weight:bold;">${p.nama}</div>
-          <div style="font-size:12px; color:var(--shopee-orange)">${formatRp(p.harga)}</div>
+// --- 4. ADMIN: PESANAN & SETTINGS ---
+function updateBankSettings() {
+  const info = document.getElementById("setBank").value;
+  db.collection("settings").doc("bank").set({ info: info }).then(() => alert("Rekening Terupdate!"));
+}
+
+function loadAdminOrders() {
+  db.collection("orders").orderBy("waktu", "desc").onSnapshot(snap => {
+    const box = document.getElementById("adminOrders");
+    box.innerHTML = "";
+    snap.forEach(doc => {
+      const o = doc.data();
+      box.innerHTML += `<div class="order-card">
+        <strong>${o.userName}</strong> - Rp${o.total.toLocaleString()}<br>
+        <small>${o.produk.join(", ")}</small><hr>
+        Metode: ${o.pembayaran} | Kirim: ${o.pengiriman}<br>
+        Status: <span style="color:blue">${o.status}</span><br>
+        <div style="margin-top:10px;">
+          <button onclick="updateStatus('${doc.id}','Proses Pesanan')">Proses</button>
+          <button onclick="updateStatus('${doc.id}','Dalam Perjalanan')">Kirim</button>
+          <button onclick="updateStatus('${doc.id}','Pesanan Terkirim')">Selesai</button>
         </div>
-      </div>
-      <div>
-        <button class="btn-edit" onclick="editProduct('${p.id}', '${p.nama}', ${p.harga}, '${p.gambar}')">Edit</button>
-        <button class="btn-del-mini" onclick="deleteProduct('${p.id}')">Hapus</button>
-      </div>
-    </div>`;
+      </div>`;
+    });
   });
-  invDiv.innerHTML = h || "Stok kosong";
 }
 
-function editProduct(id, nama, harga, gambar) {
-  document.getElementById("pId").value = id;
-  document.getElementById("pName").value = nama;
-  document.getElementById("pPrice").value = harga;
-  document.getElementById("pImage").value = gambar;
-  document.getElementById("admin-form-title").innerText = "Edit Produk:";
-  document.getElementById("btnAdminSubmit").innerText = "Simpan Perubahan";
-  document.getElementById("btnCancelEdit").style.display = "block";
-  document.getElementById("view-profile").scrollTo(0,0);
+function updateStatus(id, s) {
+  db.collection("orders").doc(id).update({ status: s });
 }
 
-function deleteProduct(id) {
-  if(confirm("Hapus produk ini dari katalog?")) {
-    db.collection("produk").doc(id).delete();
-  }
-}
-
-function resetAdminForm() {
-  document.getElementById("pId").value = "";
-  document.getElementById("pName").value = "";
-  document.getElementById("pPrice").value = "";
-  document.getElementById("pImage").value = "";
-  document.getElementById("admin-form-title").innerText = "Tambah Produk Baru:";
-  document.getElementById("btnAdminSubmit").innerText = "Upload Produk";
-  document.getElementById("btnCancelEdit").style.display = "none";
-}
-
-// --- 4. KERANJANG ---
-function addToCart(id, nama, harga) {
-  const user = auth.currentUser;
-  if(!user) return handleAuth();
-  db.collection("cart").doc(user.uid).collection("items").add({
-    nama: nama, harga: harga, time: new Date()
+function loadUserOrders(uid) {
+  db.collection("orders").where("userId", "==", uid).onSnapshot(snap => {
+    const box = document.getElementById("userOrders");
+    box.innerHTML = snap.empty ? "Belum ada pesanan" : "";
+    snap.forEach(doc => {
+      const o = doc.data();
+      box.innerHTML += `<div class="order-card">
+        <strong>Pesanan: ${o.produk[0]}...</strong><br>
+        Status: <b style="color:var(--shopee-orange)">${o.status}</b><br>
+        <small>Via ${o.pengiriman} (${o.pembayaran})</small>
+      </div>`;
+    });
   });
-  alert("Masuk keranjang!");
+}
+
+// --- KERANJANG HELPER ---
+function addToCart(id, n, h) {
+  if(!auth.currentUser) return handleAuth();
+  db.collection("cart").doc(auth.currentUser.uid).collection("items").add({ nama: n, harga: h });
+  alert("Ditambahkan!");
 }
 
 function loadCart(uid) {
   db.collection("cart").doc(uid).collection("items").onSnapshot(snap => {
     const list = document.getElementById("cartItems");
-    let html = ""; let total = 0;
+    let total = 0; list.innerHTML = "";
     snap.forEach(doc => {
-      const item = doc.data();
-      total += item.harga;
-      html += `<div class="cart-item">
-        <span>${item.nama}</span>
-        <span>${formatRp(item.harga)} <button class="btn-del" onclick="deleteCartItem('${doc.id}')">✕</button></span>
-      </div>`;
+      total += doc.data().harga;
+      list.innerHTML += `<div>${doc.data().nama} (Rp${doc.data().harga.toLocaleString()})</div>`;
     });
-    list.innerHTML = html || "Keranjang kosong";
-    document.getElementById("cartTotal").innerText = "Total: " + formatRp(total);
+    document.getElementById("cartTotal").innerText = "Total: Rp" + total.toLocaleString();
   });
 }
 
-function deleteCartItem(docId) {
-  db.collection("cart").doc(auth.currentUser.uid).collection("items").doc(docId).delete();
-}
-
-async function checkout() {
-  const user = auth.currentUser;
-  const snap = await db.collection("cart").doc(user.uid).collection("items").get();
-  if(snap.empty) return alert("Keranjang kosong!");
-
-  let listTxt = ""; let total = 0;
-  snap.forEach(d => {
-    listTxt += `- ${d.data().nama} (${formatRp(d.data().harga)})\n`;
-    total += d.data().harga;
-  });
-
-  const pesanWA = `Halo Admin OKTSHOP17, saya mau pesan:\n\n${listTxt}\nTotal: *${formatRp(total)}*`;
-  db.collection("orders").add({ userId: user.uid, total: total, status: "Menunggu", time: new Date() });
-  window.open(`https://wa.me/62895345452412?text=${encodeURIComponent(pesanWA)}`, "_blank");
-}
-
-function loadUserOrders(uid) {
-  db.collection("orders").where("userId", "==", uid).onSnapshot(snap => {
-    let h = ""; 
-    snap.forEach(doc => {
-      const o = doc.data();
-      h += `<div class="order-card"><span class="status-badge" style="background:#fff3cd; color:#856404;">${o.status}</span><br>Total: ${formatRp(o.total)}</div>`;
-    });
-    document.getElementById("userOrdersActive").innerHTML = h || "Tidak ada pesanan";
-  });
-}
-
-// --- UI HELPERS ---
-function formatRp(num) { return "Rp" + Number(num).toLocaleString('id-ID'); }
-function showView(viewId, el) {
-  document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('view-' + viewId).classList.add('active-view');
-  el.classList.add('active');
-  if(viewId === 'profile' && !auth.currentUser) handleAuth();
-}
 function logout() { auth.signOut().then(() => location.reload()); }
 
 loadKatalog();
