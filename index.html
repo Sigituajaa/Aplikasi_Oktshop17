@@ -31,6 +31,13 @@
     .section-title { font-size: 16px; font-weight: bold; margin: 15px 0 10px; border-left: 4px solid var(--shopee-orange); padding-left: 10px; }
     .info-box { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
+    /* MENU STYLE (ADMIN & USER) */
+    .menu-item { background: white; border: 1px solid #eee; margin-bottom: 5px; border-radius: 5px; overflow: hidden; }
+    .menu-header { padding: 12px 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 500; font-size: 14px; background: #fff; }
+    .menu-header:hover { background: #fafafa; }
+    .menu-content { display: none; padding: 15px; border-top: 1px solid #eee; background: #fdfdfd; }
+    .menu-content.active { display: block; }
+
     /* PRODUK GRID */
     .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .card { background: white; border-radius: 4px; overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; }
@@ -42,24 +49,17 @@
     .btn-buy { background: var(--shopee-orange); color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 5px; font-size: 12px;}
     .btn-stock { background: white; color: #555; border: 1px solid #ddd; padding: 8px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 12px;}
 
-    /* CHECKOUT VALIDATION */
-    .disabled-area { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
-
-    /* AUTH MODAL */
+    /* MODAL AUTH */
     .modal { display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; }
     .modal-content { background:white; padding:20px; border-radius:10px; width:90%; max-width:400px; }
     .modal-tabs { display:flex; margin-bottom:15px; border-bottom:1px solid #eee; }
     .tab { flex:1; text-align:center; padding:10px; cursor:pointer; color:#888; }
     .tab.active { color:var(--shopee-orange); border-bottom:2px solid var(--shopee-orange); font-weight:bold; }
 
-    /* BUTTONS */
-    .method-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-bottom: 10px; }
-    .btn-sel { border: 1px solid #ddd; padding: 10px; border-radius: 5px; background: white; cursor: pointer; text-align: center; font-size: 12px; }
-    .btn-sel.active { border-color: var(--shopee-orange); color: var(--shopee-orange); background: #fff5f2; font-weight: bold; }
-    .btn-sel.disabled { opacity: 0.5; cursor: not-allowed; background: #eee; }
     .btn-action { background: var(--green); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
+    .btn-logout { background: #f44336; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 20px; }
     
-    input, textarea, select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; }
+    input, textarea, select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; font-size: 14px; }
 
     /* NAV */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; border-top: 1px solid #ddd; z-index: 1000; }
@@ -67,6 +67,7 @@
     .nav-item.active { color: var(--shopee-orange); font-weight: bold; }
 
     #loader-global { display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; justify-content:center; align-items:center; flex-direction:column; }
+    .disabled-area { opacity: 0.5; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -83,15 +84,12 @@
       <div id="tabLogin" class="tab active" onclick="switchAuth('login')">Masuk</div>
       <div id="tabDaftar" class="tab" onclick="switchAuth('daftar')">Daftar Baru</div>
     </div>
-    
     <div id="form-auth">
-      <div id="group-nama" style="display:none;">
-        <input type="text" id="authNama" placeholder="Nama Lengkap">
-      </div>
+      <div id="group-nama" style="display:none;"><input type="text" id="authNama" placeholder="Nama Lengkap"></div>
       <input type="email" id="authEmail" placeholder="Alamat Email">
       <input type="password" id="authPass" placeholder="Password">
       <button class="btn-action" id="btnSubmitAuth" onclick="submitAuth()" style="background:var(--shopee-orange)">Masuk Sekarang</button>
-      <button class="btn-sel" style="width:100%; margin-top:10px; border:none;" onclick="closeAuth()">Batal</button>
+      <button onclick="closeAuth()" style="width:100%; margin-top:10px; border:none; background:none; cursor:pointer;">Batal</button>
     </div>
   </div>
 </div>
@@ -101,6 +99,7 @@
   <div id="user-status" onclick="openAuth()">Login / Daftar</div>
 </header>
 
+<!-- VIEW HOME -->
 <div id="view-home" class="view-section active-view">
   <div class="banner-wrapper">
     <div class="banner-container" id="bannerSlider"></div>
@@ -111,6 +110,7 @@
   </div>
 </div>
 
+<!-- VIEW CART -->
 <div id="view-cart" class="view-section">
   <div class="container">
     <div class="section-title">Keranjang Saya</div>
@@ -118,69 +118,104 @@
       <div id="cartItems">Memuat...</div>
       <hr>
       <div id="cartTotal" style="font-weight:bold; color:var(--shopee-orange); text-align:right; margin-bottom:10px; font-size:18px;">Total: Rp0</div>
-      
-      <!-- Bagian yang akan di-disable jika keranjang kosong -->
       <div id="checkout-controls" class="disabled-area">
-        <p><b>Pilih Pembayaran:</b></p>
-        <div class="method-grid">
-          <div class="btn-sel" id="pay-transfer" onclick="setPayment('Transfer Bank')">Transfer Bank</div>
-          <div class="btn-sel" id="pay-cod" onclick="setPayment('COD')">COD</div>
+        <p><b>Metode Pembayaran:</b></p>
+        <div id="display-payment-info" style="font-size: 13px; margin-bottom: 10px; padding: 10px; background: #fff5f2; border-radius: 5px; border: 1px solid var(--shopee-orange);">
+            Admin belum mengatur metode pembayaran.
         </div>
-
-        <div id="box-transfer" style="display:none;" class="info-box">
-          <p style="font-size:13px; margin:0;">Silahkan transfer ke:</p>
-          <strong id="admin-bank-info">Memuat...</strong>
-        </div>
-
-        <div id="box-cod" style="display:none;" class="info-box">
-          <input id="codAddress" placeholder="Alamat Lengkap Titik COD">
-          <label style="font-size:12px;">Jam Kirim:</label>
-          <input type="time" id="codTime">
-        </div>
-
-        <p><b>Pilih Pengiriman:</b></p>
-        <div class="method-grid" id="ship-methods">
-          <div class="btn-sel ship-btn" id="ship-JNT" onclick="setShipping('JNT')">JNT</div>
-          <div class="btn-sel ship-btn" id="ship-JNE" onclick="setShipping('JNE')">JNE</div>
-          <div class="btn-sel ship-btn" id="ship-Sicepat" onclick="setShipping('Sicepat')">Sicepat</div>
-          <div class="btn-sel ship-btn" id="ship-Ojek" onclick="setShipping('Ojek Online')">Ojek Online</div>
-        </div>
-
-        <div id="box-penerima" style="display:none;" class="info-box">
-          <p><b>Data Penerima:</b></p>
-          <input id="recName" placeholder="Nama Penerima">
-          <textarea id="recAddr" placeholder="Alamat Lengkap Penerima"></textarea>
-          <input id="recPhone" placeholder="Nomor HP Penerima">
-        </div>
-
-        <button class="btn-action" id="btnCheckout" onclick="checkout()">Selesaikan Pesanan</button>
+        <button class="btn-action" onclick="checkout()">Selesaikan Pesanan</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- VIEW PROFILE & ADMIN -->
 <div id="view-profile" class="view-section">
   <div class="container">
-    <div class="info-box">
-      <h3 id="display-name" style="margin:0;">User</h3>
-      <p id="display-email" style="font-size:12px; color:#666; margin-top:5px;"></p>
-      <button onclick="logout()" style="color:red; border:none; background:none; padding:0; cursor:pointer; font-weight:bold;">Logout</button>
+    
+    <!-- Bagian User (Pembeli/Reseller) -->
+    <div id="user-panel">
+        <div class="info-box" style="text-align:center;">
+            <h3 id="display-name" style="margin:0;">User</h3>
+            <p id="display-email" style="font-size:12px; color:#666; margin-top:5px;"></p>
+        </div>
+
+        <div class="section-title">Pengaturan Akun</div>
+
+        <div class="menu-item">
+            <div class="menu-header" onclick="toggleMenu('u-profil')">Ubah Nama Profil <span>▼</span></div>
+            <div id="u-profil" class="menu-content">
+                <small id="name-limit-info" style="color:red; display:block; margin-bottom:5px; font-size:11px;"></small>
+                <input id="newUserName" placeholder="Nama Baru">
+                <button class="btn-action" id="btnUpdateName" onclick="updateProfileName()">Simpan Nama</button>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="menu-header" onclick="toggleMenu('u-phone')">No Telepon / HP <span>▼</span></div>
+            <div id="u-phone" class="menu-content">
+                <input id="newUserPhone" placeholder="Contoh: 08123456789">
+                <button class="btn-action" onclick="updateUserData('phone')">Simpan Nomor</button>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="menu-header" onclick="toggleMenu('u-address')">Alamat Penerima <span>▼</span></div>
+            <div id="u-address" class="menu-content">
+                <textarea id="newUserAddr" placeholder="Alamat lengkap pengiriman..."></textarea>
+                <button class="btn-action" onclick="updateUserData('address')">Simpan Alamat</button>
+            </div>
+        </div>
     </div>
 
-    <div id="admin-panel" style="display:none;">
-      <div class="section-title">🛠️ Admin - Kelola Katalog</div>
-      <div class="info-box">
-        <input id="pName" placeholder="Nama Produk">
-        <input id="pPrice" type="number" placeholder="Harga">
-        <label style="font-size:12px;">Foto:</label>
-        <input type="file" id="pFile" accept="image/*">
-        <button class="btn-action" onclick="adminSaveProduct()" style="background:var(--blue)">Upload Produk</button>
+    <!-- Bagian Admin -->
+    <div id="admin-panel" style="display:none; margin-top:20px;">
+      <div class="section-title">🛠️ Panel Admin</div>
+
+      <div class="menu-item">
+          <div class="menu-header" onclick="toggleMenu('adm-alamat')">Update Alamat Admin <span>▼</span></div>
+          <div id="adm-alamat" class="menu-content">
+              <textarea id="admInputAlamat" placeholder="Alamat Toko/Titik COD"></textarea>
+              <button class="btn-action" onclick="saveAdminSetting('alamat')">Update Alamat</button>
+          </div>
       </div>
-      <div id="adminOrders"></div>
+
+      <div class="menu-item">
+          <div class="menu-header" onclick="toggleMenu('adm-rek')">Update No Rekening <span>▼</span></div>
+          <div id="adm-rek" class="menu-content">
+              <input id="admInputRek" placeholder="Contoh: BCA 123456 a/n Nama">
+              <button class="btn-action" onclick="saveAdminSetting('rekening')">Update Rekening</button>
+          </div>
+      </div>
+
+      <div class="menu-item">
+          <div class="menu-header" onclick="toggleMenu('adm-katalog')">Update Katalog Produk <span>▼</span></div>
+          <div id="adm-katalog" class="menu-content">
+              <input id="pName" placeholder="Nama Produk">
+              <input id="pPrice" type="number" placeholder="Harga">
+              <input type="file" id="pFile" accept="image/*">
+              <button class="btn-action" onclick="adminSaveProduct()" style="background:var(--blue)">Upload Produk</button>
+          </div>
+      </div>
+
+      <div class="menu-item">
+          <div class="menu-header" onclick="toggleMenu('adm-ship')">Update Pengiriman <span>▼</span></div>
+          <div id="adm-ship" class="menu-content">
+              <input id="admInputShip" placeholder="Contoh: JNT, JNE, Ojek Online">
+              <button class="btn-action" onclick="saveAdminSetting('pengiriman')">Update Opsi Kirim</button>
+          </div>
+      </div>
+
+      <div class="menu-item">
+          <div class="menu-header" onclick="toggleMenu('adm-banner')">Update Banner <span>▼</span></div>
+          <div id="adm-banner" class="menu-content">
+              <input type="file" id="pBanner" accept="image/*">
+              <button class="btn-action" onclick="adminUploadBanner()" style="background:var(--blue)">Upload Banner</button>
+          </div>
+      </div>
     </div>
 
-    <div class="section-title">📦 Pesanan Saya</div>
-    <div id="userOrders"></div>
+    <button class="btn-logout" onclick="logout()">LOGOUT APLIKASI</button>
   </div>
 </div>
 
@@ -210,92 +245,16 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
 
-let modeAuth = 'login';
-let cartCount = 0;
+let currentUserData = null;
 
-// --- AUTH LOGIC (MODAL) ---
-function openAuth() { document.getElementById("modalAuth").style.display = "flex"; }
-function closeAuth() { document.getElementById("modalAuth").style.display = "none"; }
-
-function switchAuth(mode) {
-  modeAuth = mode;
-  document.getElementById("tabLogin").classList.toggle("active", mode === 'login');
-  document.getElementById("tabDaftar").classList.toggle("active", mode === 'daftar');
-  document.getElementById("group-nama").style.display = (mode === 'daftar') ? 'block' : 'none';
-  document.getElementById("btnSubmitAuth").innerText = (mode === 'login') ? 'Masuk Sekarang' : 'Daftar Akun';
+// --- UTILITY ---
+function toggleMenu(id) {
+    const el = document.getElementById(id);
+    const isOpen = el.classList.contains('active');
+    document.querySelectorAll('.menu-content').forEach(m => m.classList.remove('active'));
+    if (!isOpen) el.classList.add('active');
 }
 
-async function submitAuth() {
-  const email = document.getElementById("authEmail").value;
-  const pass = document.getElementById("authPass").value;
-  const nama = document.getElementById("authNama").value;
-
-  if(!email || !pass) return alert("Isi email dan password!");
-  
-  document.getElementById("loader-global").style.display = "flex";
-  try {
-    if(modeAuth === 'login') {
-      await auth.signInWithEmailAndPassword(email, pass);
-    } else {
-      if(!nama) throw new Error("Nama harus diisi!");
-      const res = await auth.createUserWithEmailAndPassword(email, pass);
-      await db.collection("users").doc(res.user.uid).set({ nama: nama, role: "pembeli" });
-    }
-    closeAuth();
-  } catch (err) {
-    alert(err.message);
-  }
-  document.getElementById("loader-global").style.display = "none";
-}
-
-// --- CATALOG & STOCK ---
-function loadKatalog() {
-  db.collection("produk").orderBy("createdAt", "desc").onSnapshot(snap => {
-    const list = document.getElementById("listProduk");
-    list.innerHTML = "";
-    snap.forEach(doc => {
-      const p = doc.data();
-      const waLink = `https://wa.me/628123456789?text=Halo%20Admin%2C%20apakah%20stok%20${encodeURIComponent(p.nama)}%20masih%20ada%3F`;
-      list.innerHTML += `
-        <div class="card">
-          <img src="${p.gambar}">
-          <div class="card-info">
-            <div class="card-title">${p.nama}</div>
-            <div class="card-price">Rp${p.harga.toLocaleString()}</div>
-            <button class="btn-buy" onclick="addToCart('${doc.id}','${p.nama}',${p.harga})">🛒 + Keranjang</button>
-            <button class="btn-stock" onclick="window.open('${waLink}')">💬 Tanyakan Stok</button>
-          </div>
-        </div>`;
-    });
-  });
-}
-
-// --- CART VALIDATION ---
-function loadCart(uid) {
-  db.collection("cart").doc(uid).collection("items").onSnapshot(snap => {
-    const list = document.getElementById("cartItems");
-    const controls = document.getElementById("checkout-controls");
-    let total = 0; 
-    cartCount = snap.size;
-    list.innerHTML = (cartCount === 0) ? "Keranjang masih kosong" : "";
-    
-    snap.forEach(doc => {
-      total += doc.data().harga;
-      list.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px;"><span>${doc.data().nama}</span> <b>Rp${doc.data().harga.toLocaleString()}</b></div>`;
-    });
-
-    document.getElementById("cartTotal").innerText = "Total: Rp" + total.toLocaleString();
-
-    // Validasi Tombol: Jika kosong, disable area pembayaran
-    if(cartCount > 0) {
-      controls.classList.remove("disabled-area");
-    } else {
-      controls.classList.add("disabled-area");
-    }
-  });
-}
-
-// --- OTHER FUNCTIONS ---
 function showView(viewId, el) {
   document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -303,67 +262,83 @@ function showView(viewId, el) {
   if(el) el.classList.add('active');
 }
 
-function addToCart(id, n, h) {
-  if(!auth.currentUser) return openAuth();
-  db.collection("cart").doc(auth.currentUser.uid).collection("items").add({ nama: n, harga: h });
-  alert("Berhasil ditambah ke keranjang!");
+// --- AUTH ---
+function openAuth() { document.getElementById("modalAuth").style.display = "flex"; }
+function closeAuth() { document.getElementById("modalAuth").style.display = "none"; }
+function switchAuth(mode) {
+  document.getElementById("tabLogin").classList.toggle("active", mode === 'login');
+  document.getElementById("tabDaftar").classList.toggle("active", mode === 'daftar');
+  document.getElementById("group-nama").style.display = (mode === 'daftar') ? 'block' : 'none';
+  document.getElementById("btnSubmitAuth").innerText = (mode === 'login') ? 'Masuk Sekarang' : 'Daftar Akun';
+  window.modeAuth = mode;
 }
 
-auth.onAuthStateChanged(user => {
-  if(user) {
-    db.collection("users").doc(user.uid).onSnapshot(doc => {
-      const d = doc.data() || {};
-      document.getElementById("display-name").innerText = d.nama || "User";
-      document.getElementById("display-email").innerText = user.email;
-      document.getElementById("user-status").innerText = d.nama || "Member";
-      if(d.role === "admin") document.getElementById("admin-panel").style.display = "block";
-    });
-    loadCart(user.uid);
-    loadUserOrders(user.uid);
-  } else {
-    document.getElementById("user-status").innerText = "Login / Daftar";
-  }
-});
-
-// Sisanya fungsi (setPayment, checkout, dsb) sama dengan kode sebelumnya
-let selectedPayment = "";
-let selectedShipping = "";
-
-function setPayment(m) {
-  selectedPayment = m;
-  document.getElementById('pay-transfer').classList.toggle('active', m === 'Transfer Bank');
-  document.getElementById('pay-cod').classList.toggle('active', m === 'COD');
-  document.getElementById('box-transfer').style.display = (m === 'Transfer Bank') ? 'block' : 'none';
-  document.getElementById('box-cod').style.display = (m === 'COD') ? 'block' : 'none';
-  if(m === 'Transfer Bank') {
-    db.collection("settings").doc("general").get().then(doc => {
-      document.getElementById("admin-bank-info").innerText = doc.data()?.bank || "BCA 12345678 a/n Admin";
-    });
-  }
+async function submitAuth() {
+  const email = document.getElementById("authEmail").value;
+  const pass = document.getElementById("authPass").value;
+  const nama = document.getElementById("authNama").value;
+  if(!email || !pass) return alert("Isi email dan password!");
+  
+  document.getElementById("loader-global").style.display = "flex";
+  try {
+    if(window.modeAuth === 'daftar') {
+      const res = await auth.createUserWithEmailAndPassword(email, pass);
+      await db.collection("users").doc(res.user.uid).set({ 
+          nama: nama, role: "pembeli", lastUpdate: firebase.firestore.FieldValue.serverTimestamp() 
+      });
+    } else {
+      await auth.signInWithEmailAndPassword(email, pass);
+    }
+    closeAuth();
+  } catch (err) { alert(err.message); }
+  document.getElementById("loader-global").style.display = "none";
 }
 
-function setShipping(m) {
-  selectedShipping = m;
-  document.querySelectorAll('.ship-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('ship-' + (m === 'Ojek Online' ? 'Ojek' : m)).classList.add('active');
-  const isExp = ['JNT', 'JNE', 'Sicepat'].includes(m);
-  document.getElementById('box-penerima').style.display = isExp ? 'block' : 'none';
+// --- USER LOGIC ---
+async function updateProfileName() {
+    const newName = document.getElementById("newUserName").value;
+    if(!newName) return alert("Nama tidak boleh kosong");
+
+    const now = new Date();
+    const lastUpdate = currentUserData.lastUpdate ? currentUserData.lastUpdate.toDate() : new Date(0);
+    const diffTime = Math.abs(now - lastUpdate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 30) {
+        return alert(`Anda baru bisa mengganti nama setelah 30 hari. (Sisa ${30 - diffDays} hari lagi)`);
+    }
+
+    try {
+        await db.collection("users").doc(auth.currentUser.uid).update({
+            nama: newName,
+            lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        alert("Nama berhasil diperbarui!");
+        toggleMenu('u-profil');
+    } catch (e) { alert(e.message); }
 }
 
-function logout() { auth.signOut().then(() => location.reload()); }
+async function updateUserData(field) {
+    const val = field === 'phone' ? document.getElementById("newUserPhone").value : document.getElementById("newUserAddr").value;
+    const key = field === 'phone' ? 'phone' : 'address';
+    try {
+        await db.collection("users").doc(auth.currentUser.uid).update({ [key]: val });
+        alert("Data berhasil disimpan!");
+        toggleMenu(field === 'phone' ? 'u-phone' : 'u-address');
+    } catch (e) { alert(e.message); }
+}
 
-function loadUserOrders(uid) {
-  db.collection("orders").where("userId", "==", uid).onSnapshot(snap => {
-    const box = document.getElementById("userOrders");
-    box.innerHTML = snap.empty ? "Belum ada pesanan" : "";
-    snap.forEach(doc => {
-      const o = doc.data();
-      box.innerHTML += `<div class="order-card" style="border:1px solid #ddd; padding:10px; margin-top:5px; border-radius:5px;">
-        <b>${o.items[0]}...</b> <span style="font-size:10px; background:orange; padding:2px 5px; color:white;">${o.status}</span><br>
-        Total: Rp${o.total.toLocaleString()}
-      </div>`;
-    });
-  });
+// --- ADMIN LOGIC ---
+async function saveAdminSetting(type) {
+    let val = "";
+    if(type === 'alamat') val = document.getElementById("admInputAlamat").value;
+    if(type === 'rekening') val = document.getElementById("admInputRek").value;
+    if(type === 'pengiriman') val = document.getElementById("admInputShip").value;
+
+    try {
+        await db.collection("settings").doc("general").set({ [type]: val }, { merge: true });
+        alert("Pengaturan Berhasil Disimpan!");
+    } catch (e) { alert(e.message); }
 }
 
 async function adminSaveProduct() {
@@ -378,11 +353,116 @@ async function adminSaveProduct() {
     const url = await ref.getDownloadURL();
     await db.collection("produk").add({ nama: name, harga: price, gambar: url, createdAt: new Date() });
     alert("Produk Terupload!");
+    toggleMenu('adm-katalog');
   } catch (e) { alert(e.message); }
   document.getElementById("loader-global").style.display = "none";
 }
 
+async function adminUploadBanner() {
+    const file = document.getElementById("pBanner").files[0];
+    if(!file) return alert("Pilih file!");
+    document.getElementById("loader-global").style.display = "flex";
+    try {
+        const ref = storage.ref('banners/' + Date.now());
+        await ref.put(file);
+        const url = await ref.getDownloadURL();
+        await db.collection("banners").add({ url: url, createdAt: new Date() });
+        alert("Banner Berhasil Ditambah!");
+    } catch (e) { alert(e.message); }
+    document.getElementById("loader-global").style.display = "none";
+}
+
+// --- DATA LOADERS ---
+auth.onAuthStateChanged(user => {
+  if(user) {
+    db.collection("users").doc(user.uid).onSnapshot(doc => {
+      currentUserData = doc.data();
+      document.getElementById("display-name").innerText = currentUserData.nama || "User";
+      document.getElementById("display-email").innerText = user.email;
+      document.getElementById("user-status").innerText = currentUserData.nama || "Member";
+      
+      // Update UI Inputs
+      document.getElementById("newUserPhone").value = currentUserData.phone || "";
+      document.getElementById("newUserAddr").value = currentUserData.address || "";
+
+      if(currentUserData.role === "admin") document.getElementById("admin-panel").style.display = "block";
+      
+      // Info 30 Hari
+      const lastUpdate = currentUserData.lastUpdate ? currentUserData.lastUpdate.toDate() : new Date(0);
+      const diffDays = Math.ceil(Math.abs(new Date() - lastUpdate) / (1000 * 60 * 60 * 24));
+      document.getElementById("name-limit-info").innerText = diffDays < 30 ? `Tersedia dalam ${30-diffDays} hari` : "Nama bisa diganti sekarang.";
+    });
+    loadCart(user.uid);
+  }
+});
+
+function loadKatalog() {
+  db.collection("produk").orderBy("createdAt", "desc").onSnapshot(snap => {
+    const list = document.getElementById("listProduk");
+    list.innerHTML = "";
+    snap.forEach(doc => {
+      const p = doc.data();
+      list.innerHTML += `
+        <div class="card">
+          <img src="${p.gambar}">
+          <div class="card-info">
+            <div class="card-title">${p.nama}</div>
+            <div class="card-price">Rp${p.harga.toLocaleString()}</div>
+            <button class="btn-buy" onclick="addToCart('${doc.id}','${p.nama}',${p.harga})">🛒 + Keranjang</button>
+          </div>
+        </div>`;
+    });
+  });
+}
+
+function loadBanners() {
+    db.collection("banners").orderBy("createdAt", "desc").onSnapshot(snap => {
+        const container = document.getElementById("bannerSlider");
+        container.innerHTML = "";
+        snap.forEach(doc => {
+            container.innerHTML += `<div class="banner-slide"><img src="${doc.data().url}"></div>`;
+        });
+    });
+}
+
+function loadCart(uid) {
+  db.collection("cart").doc(uid).collection("items").onSnapshot(snap => {
+    const list = document.getElementById("cartItems");
+    const controls = document.getElementById("checkout-controls");
+    let total = 0;
+    list.innerHTML = snap.empty ? "Keranjang Kosong" : "";
+    snap.forEach(doc => {
+      total += doc.data().harga;
+      list.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px;"><span>${doc.data().nama}</span> <b>Rp${doc.data().harga.toLocaleString()}</b></div>`;
+    });
+    document.getElementById("cartTotal").innerText = "Total: Rp" + total.toLocaleString();
+    if(!snap.empty) controls.classList.remove("disabled-area");
+    
+    // Load Admin Payment Info to Cart
+    db.collection("settings").doc("general").get().then(doc => {
+        if(doc.exists) {
+            document.getElementById("display-payment-info").innerHTML = `
+                <b>Transfer:</b> ${doc.data().rekening || '-'}<br>
+                <b>Pengiriman:</b> ${doc.data().pengiriman || '-'}<br>
+                <b>Alamat Admin:</b> ${doc.data().alamat || '-'}
+            `;
+        }
+    });
+  });
+}
+
+function addToCart(id, n, h) {
+  if(!auth.currentUser) return openAuth();
+  db.collection("cart").doc(auth.currentUser.uid).collection("items").add({ nama: n, harga: h });
+  alert("Berhasil ditambah!");
+}
+
+function logout() { auth.signOut().then(() => location.reload()); }
+
+// Initialize
 loadKatalog();
+loadBanners();
+switchAuth('login');
 </script>
 
 <style>
