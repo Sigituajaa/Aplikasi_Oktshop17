@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   
   <style>
-    :root { --shopee-orange: #ee4d2d; --bg-light: #f5f5f5; --text-dark: #222; --green: #28a745; --blue: #007bff; --grey: #888; }
+    :root { --shopee-orange: #ee4d2d; --bg-light: #f5f5f5; --text-dark: #222; --green: #28a745; --blue: #007bff; --grey: #bbb; --light-grey: #eee; }
     * { box-sizing: border-box; }
     body { font-family: 'Roboto', sans-serif; background: var(--bg-light); margin:0; color: var(--text-dark); padding-bottom: 80px; }
 
@@ -29,9 +29,8 @@
     .section-title { font-size: 14px; font-weight: bold; margin: 15px 0 10px; border-left: 4px solid var(--shopee-orange); padding-left: 10px; text-transform: uppercase; }
     
     .info-box { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-    .card-order { background: white; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #ddd; font-size: 13px; }
-
-    /* KATALOG */
+    
+    /* PRODUK */
     .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .card { background: white; border-radius: 4px; overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; }
     .card img { width: 100%; height: 130px; object-fit: cover; }
@@ -41,9 +40,25 @@
     .btn-buy { background: var(--shopee-orange); color: white; border: none; padding: 8px; border-radius: 4px; width: 100%; font-weight: bold; cursor: pointer; font-size: 11px; margin-top: 5px; }
 
     /* FORM & INPUT */
-    input, select, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
+    label { font-size: 12px; font-weight: bold; color: #555; margin-top: 10px; display: block; }
+    input, select, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; font-family: inherit; }
     .btn-action { background: var(--shopee-orange); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
-    .btn-small { padding: 5px 10px; font-size: 11px; margin-right: 5px; border: none; border-radius: 3px; cursor: pointer; color: white; }
+    .btn-outline { background: white; border: 1px solid var(--shopee-orange); color: var(--shopee-orange); padding: 8px; border-radius: 4px; width: 100%; font-size: 12px; cursor: pointer; margin-top: 5px; }
+
+    /* STATUS TRACKER */
+    .card-order { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #eee; position: relative; }
+    .order-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; margin-bottom: 10px; }
+    .status-container { display: flex; justify-content: space-between; margin: 15px 0; position: relative; }
+    .status-container::before { content: ''; position: absolute; top: 12px; left: 10%; right: 10%; height: 2px; background: #ddd; z-index: 1; }
+    .step { z-index: 2; text-align: center; flex: 1; font-size: 10px; color: var(--grey); font-weight: bold; }
+    .step-icon { width: 25px; height: 25px; background: #ddd; border-radius: 50%; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; }
+    /* Active States */
+    .step.active-proses .step-icon { background: orange; }
+    .step.active-proses { color: orange; }
+    .step.active-kirim .step-icon { background: var(--blue); }
+    .step.active-kirim { color: var(--blue); }
+    .step.active-selesai .step-icon { background: var(--green); }
+    .step.active-selesai { color: var(--green); }
 
     /* NAV */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; border-top: 1px solid #ddd; z-index: 1000; }
@@ -52,15 +67,11 @@
 
     /* ADMIN & MENU */
     .menu-item { background: white; border-bottom: 1px solid #eee; }
-    .menu-header { padding: 12px 15px; cursor: pointer; display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; }
-    .menu-content { display: none; padding: 15px; background: #fafafa; border-bottom: 1px solid #eee; }
+    .menu-header { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; font-size: 14px; }
+    .menu-content { display: none; padding: 15px; background: #fafafa; }
     .menu-content.active { display: block; }
     
-    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; color: white; text-transform: uppercase; }
-    
     #loader { display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; align-items:center; justify-content:center; flex-direction: column; }
-
-    /* MODAL */
     .modal { display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; }
     .modal-content { background:white; padding:20px; border-radius:10px; width:90%; max-width:350px; }
   </style>
@@ -72,7 +83,6 @@
     <p>Memproses...</p>
 </div>
 
-<!-- MODAL AUTH -->
 <div id="modalAuth" class="modal">
   <div class="modal-content">
     <h3 id="authTitle" style="margin-top:0; color:var(--shopee-orange)">Masuk</h3>
@@ -90,7 +100,7 @@
   <div id="user-status" onclick="openAuth('login')">Login / Daftar</div>
 </header>
 
-<!-- HOME -->
+<!-- HOME VIEW -->
 <div id="view-home" class="view-section active-view">
   <div class="banner-wrapper">
     <div class="banner-container" id="bannerSlider"></div>
@@ -101,7 +111,7 @@
   </div>
 </div>
 
-<!-- CART -->
+<!-- CART VIEW -->
 <div id="view-cart" class="view-section">
   <div class="container">
     <div class="section-title">Keranjang Belanja</div>
@@ -111,26 +121,33 @@
     </div>
 
     <div id="checkout-form" style="display:none;">
-        <div class="section-title">Menu Pembayaran & Pengiriman</div>
+        <div class="section-title">Informasi Pengiriman & Pembayaran</div>
         <div class="info-box">
-            <label>Metode Pembayaran:</label>
-            <select id="payMethod">
-                <option value="Transfer Bank">Transfer Bank</option>
-                <option value="COD">COD (Bayar di Tempat)</option>
-            </select>
-            
-            <label>Jasa Pengiriman:</label>
+            <label>Data Penerima (Wajib):</label>
+            <input type="text" id="shipNama" placeholder="Nama Lengkap Penerima">
+            <input type="number" id="shipHp" placeholder="No. HP / WhatsApp">
+            <textarea id="shipAlamat" placeholder="Alamat Lengkap (Jalan, No Rumah, Kel/Kec, Kota)"></textarea>
+
+            <label>Jenis Pengiriman (Wajib):</label>
             <select id="shipMethod">
+                <option value="">-- Pilih Kurir --</option>
                 <option value="JNT">JNT</option>
                 <option value="JNE">JNE</option>
                 <option value="SICEPAT">SICEPAT</option>
                 <option value="COD">Kurir Internal (Khusus COD)</option>
             </select>
 
-            <label>Data Penerima:</label>
-            <input type="text" id="shipNama" placeholder="Nama Penerima">
-            <textarea id="shipAlamat" placeholder="Alamat Lengkap"></textarea>
-            <input type="number" id="shipHp" placeholder="No. HP Penerima">
+            <label>Metode Pembayaran (Wajib):</label>
+            <select id="payMethod" onchange="toggleBuktiTransfer()">
+                <option value="">-- Pilih Pembayaran --</option>
+                <option value="Transfer Bank">Transfer Bank</option>
+                <option value="COD">COD (Bayar di Tempat)</option>
+            </select>
+            
+            <div id="boxBuktiTransfer" style="display:none; background:#fff9f9; padding:10px; border:1px dashed var(--shopee-orange); margin-top:10px; border-radius:5px;">
+                <p style="font-size:11px; margin:0 0 5px 0;">Silahkan upload bukti transfer (Opsional)</p>
+                <input type="file" id="buktiFile" accept="image/*" style="font-size:11px;">
+            </div>
 
             <button class="btn-action" onclick="processCheckout()">Bayar Sekarang</button>
         </div>
@@ -140,65 +157,41 @@
         <p style="font-size:13px; color:#666;">Silahkan Login untuk melanjutkan pemesanan</p>
         <button class="btn-action" onclick="openAuth('login')">Login Sekarang</button>
     </div>
-
-    <div class="section-title">Status Pengiriman</div>
-    <div id="userOrders">Belum ada pesanan.</div>
   </div>
 </div>
 
-<!-- PROFILE -->
+<!-- PROFILE VIEW -->
 <div id="view-profile" class="view-section">
   <div class="container">
-    <!-- User Info -->
-    <div class="info-box" style="text-align:center; border-top: 4px solid var(--shopee-orange);">
-        <b id="display-name" style="font-size: 16px;">Memuat...</b><br>
-        <span id="display-email" style="font-size: 12px; color: #777;"></span>
+    <div class="section-title">Profil Saya</div>
+    <div class="info-box" style="display:flex; align-items:center;">
+        <div style="width:50px; height:50px; background:var(--shopee-orange); border-radius:50%; color:white; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:bold; margin-right:15px;" id="user-initial">U</div>
+        <div>
+            <b id="display-name" style="font-size: 16px;">Memuat...</b><br>
+            <span id="display-email" style="font-size: 12px; color: #777;"></span>
+        </div>
     </div>
 
-    <!-- Admin Panel -->
-    <div id="admin-panel" style="display:none;">
-      <div class="section-title">Panel Admin (Manager)</div>
-      
-      <div class="menu-item"><div class="menu-header" onclick="toggleMenu('adm-pesanan')">Kelola Pesanan Masuk <span>+</span></div>
-        <div id="adm-pesanan" class="menu-content">
-            <div id="adminOrderList"></div>
-        </div>
-      </div>
+    <div class="section-title">Pesanan Saya</div>
+    <div id="userOrders">Belum ada pesanan.</div>
 
-      <div class="menu-item"><div class="menu-header" onclick="toggleMenu('adm-prod')">Update Katalog Produk <span>+</span></div>
+    <!-- Admin Panel -->
+    <div id="admin-panel" style="display:none; margin-top:20px;">
+      <div class="section-title">Panel Admin</div>
+      <div class="menu-item"><div class="menu-header" onclick="toggleMenu('adm-pesanan')">Kelola Pesanan Masuk <span>+</span></div>
+        <div id="adm-pesanan" class="menu-content"><div id="adminOrderList"></div></div>
+      </div>
+      <div class="menu-item"><div class="menu-header" onclick="toggleMenu('adm-prod')">Tambah Produk <span>+</span></div>
         <div id="adm-prod" class="menu-content">
             <input id="pName" placeholder="Nama Produk">
             <input id="pPrice" type="number" placeholder="Harga">
             <input type="file" id="pFile" accept="image/*">
-            <button class="btn-action" onclick="adminSaveProduct()" style="background:var(--blue)">Simpan ke Katalog</button>
-        </div>
-      </div>
-
-      <div class="menu-item"><div class="menu-header" onclick="toggleMenu('adm-banner')">Update Banner Promosi <span>+</span></div>
-        <div id="adm-banner" class="menu-content">
-            <input type="file" id="bFile" accept="image/*">
-            <button class="btn-action" onclick="adminSaveBanner()" style="background:var(--blue)">Upload Banner</button>
-        </div>
-      </div>
-
-      <div class="menu-item"><div class="menu-header" onclick="toggleMenu('adm-rek')">Update Rekening Pembayaran <span>+</span></div>
-        <div id="adm-rek" class="menu-content">
-            <textarea id="adminRek" placeholder="Contoh: BANK BCA - 12345678 a/n OKT SHOP"></textarea>
-            <button class="btn-action" onclick="updateAdminSettings('rekening')">Update Rekening</button>
+            <button class="btn-action" onclick="adminSaveProduct()" style="background:var(--blue)">Simpan</button>
         </div>
       </div>
     </div>
 
-    <!-- General Profile Menu -->
-    <div class="section-title">Akun Saya</div>
-    <div class="menu-item"><div class="menu-header" onclick="toggleMenu('u-addr')">Alamat Pengiriman Default <span>></span></div>
-        <div id="u-addr" class="menu-content">
-            <textarea id="newUserAddr" placeholder="Alamat lengkap..."></textarea>
-            <button class="btn-action" onclick="updateUserAddress()">Simpan Alamat</button>
-        </div>
-    </div>
-
-    <button class="btn-action" onclick="logout()" style="background:#666; margin-top: 20px;">Keluar Aplikasi</button>
+    <button class="btn-action" onclick="logout()" style="background:#666; margin-top: 40px; margin-bottom: 20px;">Keluar Aplikasi</button>
   </div>
 </div>
 
@@ -208,7 +201,6 @@
   <div class="nav-item" onclick="showView('profile', this)">👤<br>Profil</div>
 </div>
 
-<!-- FIREBASE SDK -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -227,11 +219,8 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(), db = firebase.firestore(), storage = firebase.storage();
 
-let currentTotal = 0;
-let cartItemsData = [];
-let modeAuth = 'login';
+let currentTotal = 0, cartItemsData = [], modeAuth = 'login';
 
-// --- UI LOGIC ---
 function showView(viewId, el) {
   document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -239,64 +228,48 @@ function showView(viewId, el) {
   if(el) el.classList.add('active');
 }
 
-function toggleMenu(id) {
-    const el = document.getElementById(id);
-    el.classList.toggle('active');
-}
-
+function toggleMenu(id) { document.getElementById(id).classList.toggle('active'); }
 function openAuth(mode) {
     modeAuth = mode;
     document.getElementById("modalAuth").style.display = "flex";
     document.getElementById("authTitle").innerText = mode === 'login' ? 'Masuk' : 'Daftar Member';
     document.getElementById("authNama").style.display = mode === 'daftar' ? 'block' : 'none';
-    document.getElementById("switchAuthBtn").innerText = mode === 'login' ? 'Belum punya akun? Daftar' : 'Sudah punya akun? Login';
 }
-
 function closeAuth() { document.getElementById("modalAuth").style.display = "none"; }
+function toggleAuthMode() { modeAuth = (modeAuth === 'login') ? 'daftar' : 'login'; openAuth(modeAuth); }
 
-function toggleAuthMode() {
-    modeAuth = (modeAuth === 'login') ? 'daftar' : 'login';
-    openAuth(modeAuth);
-}
-
-// --- AUTH ACTIONS ---
 async function submitAuth() {
-  const email = document.getElementById("authEmail").value;
-  const pass = document.getElementById("authPass").value;
-  const nama = document.getElementById("authNama").value;
-  if(!email || !pass) return alert("Email & Password harus diisi!");
-  
+  const email = document.getElementById("authEmail").value, pass = document.getElementById("authPass").value, nama = document.getElementById("authNama").value;
+  if(!email || !pass) return alert("Isi email & password!");
   showLoader(true);
   try {
     if(modeAuth === 'daftar') {
       const res = await auth.createUserWithEmailAndPassword(email, pass);
       await db.collection("users").doc(res.user.uid).set({ nama, role: "pembeli", createdAt: new Date() });
-    } else {
-      await auth.signInWithEmailAndPassword(email, pass);
-    }
+    } else { await auth.signInWithEmailAndPassword(email, pass); }
     closeAuth();
   } catch (err) { alert(err.message); }
   showLoader(false);
 }
 
-// --- CORE FUNCTIONS ---
+function toggleBuktiTransfer() {
+    const pay = document.getElementById("payMethod").value;
+    document.getElementById("boxBuktiTransfer").style.display = (pay === 'Transfer Bank') ? 'block' : 'none';
+}
+
 auth.onAuthStateChanged(user => {
   if(user) {
     document.getElementById("login-to-checkout").style.display = "none";
     document.getElementById("checkout-form").style.display = "block";
-    
     db.collection("users").doc(user.uid).onSnapshot(doc => {
-      const data = doc.data();
-      if(!data) return;
+      const data = doc.data(); if(!data) return;
       document.getElementById("user-status").innerText = "Hi, " + (data.nama || "User");
       document.getElementById("display-name").innerText = data.nama || "User";
+      document.getElementById("user-initial").innerText = (data.nama ? data.nama[0] : "U").toUpperCase();
       document.getElementById("display-email").innerText = user.email;
-      document.getElementById("newUserAddr").value = data.alamat || "";
-      
       if(data.role === 'admin') {
           document.getElementById("admin-panel").style.display = "block";
           loadAdminOrders();
-          loadAdminSettings();
       }
     });
     loadCart(user.uid);
@@ -311,8 +284,7 @@ auth.onAuthStateChanged(user => {
 
 function loadKatalog() {
   db.collection("produk").orderBy("createdAt", "desc").onSnapshot(snap => {
-    const list = document.getElementById("listProduk");
-    list.innerHTML = "";
+    const list = document.getElementById("listProduk"); list.innerHTML = "";
     snap.forEach(doc => {
       const p = doc.data();
       list.innerHTML += `<div class="card">
@@ -339,10 +311,8 @@ function loadCart(uid) {
     currentTotal = 0; cartItemsData = [];
     list.innerHTML = snap.empty ? "<p style='color:#999'>Keranjang kosong</p>" : "";
     snap.forEach(doc => {
-      const item = doc.data();
-      currentTotal += item.harga;
-      cartItemsData.push(item);
-      list.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px; border-bottom:1px dashed #eee; padding-bottom:5px;">
+      const item = doc.data(); currentTotal += item.harga; cartItemsData.push(item);
+      list.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
         <span>${item.nama}</span> <b>Rp${item.harga.toLocaleString()}</b>
       </div>`;
     });
@@ -350,7 +320,6 @@ function loadCart(uid) {
   });
 }
 
-// --- ORDER SYSTEM ---
 async function processCheckout() {
     const user = auth.currentUser;
     const name = document.getElementById("shipNama").value;
@@ -358,49 +327,37 @@ async function processCheckout() {
     const hp = document.getElementById("shipHp").value;
     const pay = document.getElementById("payMethod").value;
     const ship = document.getElementById("shipMethod").value;
+    const file = document.getElementById("buktiFile").files[0];
 
-    if(cartItemsData.length === 0) return alert("Keranjang masih kosong!");
-    if(!name || !addr || !hp) return alert("Lengkapi data penerima!");
+    if(cartItemsData.length === 0) return alert("Keranjang kosong!");
+    if(!name || !addr || !hp || !pay || !ship) return alert("Mohon lengkapi data diri, pengiriman, dan pembayaran!");
 
     showLoader(true);
     try {
-        // Get Counter for Order ID
-        const counterRef = db.collection("settings").doc("orderCounter");
-        const counterDoc = await counterRef.get();
-        let currentCount = 1;
-
-        if(!counterDoc.exists) {
-            await counterRef.set({ count: 1 });
-        } else {
-            currentCount = counterDoc.data().count + 1;
-            await counterRef.update({ count: currentCount });
+        let buktiUrl = "";
+        if(file) {
+            const ref = storage.ref(`bukti_transfer/${user.uid}_${Date.now()}`);
+            await ref.put(file);
+            buktiUrl = await ref.getDownloadURL();
         }
 
-        const orderID = String(currentCount).padStart(5, '0');
+        const counterRef = db.collection("settings").doc("orderCounter");
+        const counterDoc = await counterRef.get();
+        let currentCount = counterDoc.exists ? counterDoc.data().count + 1 : 1;
+        await counterRef.set({ count: currentCount });
+        const orderID = "OKT" + String(currentCount).padStart(5, '0');
 
         await db.collection("orders").add({
-            orderID: orderID,
-            uid: user.uid,
-            items: cartItemsData,
-            total: currentTotal,
-            penerima: name,
-            alamat: addr,
-            hp: hp,
-            metodeBayar: pay,
-            metodeKirim: ship,
-            status: "proses",
-            resi: "",
-            createdAt: new Date()
+            orderID, uid: user.uid, items: cartItemsData, total: currentTotal,
+            penerima: name, alamat: addr, hp, metodeBayar: pay, metodeKirim: ship,
+            status: "proses", resi: "", buktiTransfer: buktiUrl, createdAt: new Date()
         });
 
-        // Clear Cart
         const items = await db.collection("cart").doc(user.uid).collection("items").get();
         items.forEach(d => d.ref.delete());
 
-        alert(`Pemesanan Berhasil!\nNomor Pesanan: ${orderID}`);
-        document.getElementById("shipNama").value = "";
-        document.getElementById("shipAlamat").value = "";
-        document.getElementById("shipHp").value = "";
+        alert(`Pesanan Berhasil!\nOrder ID: ${orderID}`);
+        showView('profile', document.querySelectorAll('.nav-item')[2]);
     } catch (e) { alert(e.message); }
     showLoader(false);
 }
@@ -411,153 +368,98 @@ function loadUserOrders(uid) {
         list.innerHTML = snap.empty ? "Belum ada pesanan." : "";
         snap.forEach(doc => {
             const o = doc.data();
-            let statusColor = o.status === 'proses' ? '#ff9800' : (o.status === 'kirim' ? '#007bff' : '#28a745');
-            list.innerHTML += `<div class="card-order">
-                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                    <b>#${o.orderID}</b>
-                    <span class="status-badge" style="background:${statusColor}">${o.status}</span>
-                </div>
-                <div>Status: <b>${o.status.toUpperCase()}</b></div>
-                <div>No. Resi: <b>${o.resi || '-'}</b></div>
-                <hr>
-                <div style="font-size:11px; color:#666">
-                    Metode: ${o.metodeBayar} | ${o.metodeKirim}<br>
-                    Total: Rp${o.total.toLocaleString()}
-                </div>
-                ${o.status === 'kirim' ? `<button class="btn-small" style="background:var(--green); margin-top:10px;" onclick="updateOrderStatus('${doc.id}', 'selesai')">Selesaikan Pesanan</button>` : ''}
-                <button class="btn-small" style="background:var(--grey); margin-top:10px;" onclick="returOrder('${o.orderID}')">Retur</button>
-            </div>`;
+            const s = o.status; // proses, kirim, selesai
+            list.innerHTML += `
+                <div class="card-order">
+                    <div class="order-header">
+                        <b style="color:var(--shopee-orange)">#${o.orderID}</b>
+                        <small style="color:#999">${o.createdAt.toDate().toLocaleDateString()}</small>
+                    </div>
+                    <div style="font-size:12px; margin-bottom:5px;">No. Resi: <b style="color:var(--blue)">${o.resi || 'Belum Ada'}</b></div>
+                    
+                    <div class="status-container">
+                        <div class="step ${s==='proses'||s==='kirim'||s==='selesai'?'active-proses':''}">
+                            <div class="step-icon">1</div>Proses
+                        </div>
+                        <div class="step ${s==='kirim'||s==='selesai'?'active-kirim':''}">
+                            <div class="step-icon">2</div>Kirim
+                        </div>
+                        <div class="step ${s==='selesai'?'active-selesai':''}">
+                            <div class="step-icon">3</div>Selesai
+                        </div>
+                    </div>
+
+                    <div style="font-size:11px; color:#666; background:#f9f9f9; padding:8px; border-radius:4px;">
+                        Penerima: ${o.penerima}<br>
+                        Kurir: ${o.metodeKirim} | Total: Rp${o.total.toLocaleString()}
+                    </div>
+                    ${s === 'kirim' ? `<button class="btn-outline" onclick="updateOrderStatus('${doc.id}', 'selesai')">Konfirmasi Diterima</button>` : ''}
+                </div>`;
         });
     });
 }
 
-// --- ADMIN FUNCTIONS ---
+// --- ADMIN ---
 function loadAdminOrders() {
     db.collection("orders").orderBy("createdAt", "desc").onSnapshot(snap => {
-        const list = document.getElementById("adminOrderList");
-        list.innerHTML = "";
+        const list = document.getElementById("adminOrderList"); list.innerHTML = "";
         snap.forEach(doc => {
             const o = doc.data();
-            list.innerHTML += `<div class="card-order">
+            list.innerHTML += `<div class="card-order" style="font-size:12px;">
                 <b>Order #${o.orderID}</b><br>
                 Penerima: ${o.penerima} (${o.hp})<br>
-                Alamat: ${o.alamat}<br>
-                Total: Rp${o.total.toLocaleString()}<br>
-                Metode: ${o.metodeBayar} / ${o.metodeKirim}<br>
-                Status: <b>${o.status}</b><br>
-                <input type="text" id="resi-${doc.id}" placeholder="Input No. Resi" value="${o.resi || ''}" style="margin-top:5px;">
-                <div style="margin-top:5px;">
-                    <button class="btn-small" style="background:#ff9800" onclick="adminUpdateStatus('${doc.id}', 'proses')">Proses</button>
-                    <button class="btn-small" style="background:#007bff" onclick="adminUpdateStatus('${doc.id}', 'kirim')">Kirim</button>
-                    <button class="btn-small" style="background:#28a745" onclick="adminUpdateStatus('${doc.id}', 'selesai')">Selesai</button>
-                </div>
+                Status: <b>${o.status.toUpperCase()}</b><br>
+                <input type="text" id="resi-${doc.id}" placeholder="Input Resi" value="${o.resi || ''}">
+                <button class="btn-small" onclick="adminUpdateStatus('${doc.id}', 'proses')">Proses</button>
+                <button class="btn-small" onclick="adminUpdateStatus('${doc.id}', 'kirim')">Kirim</button>
             </div>`;
         });
     });
 }
 
-async function adminUpdateStatus(id, newStatus) {
-    const resiValue = document.getElementById(`resi-${id}`).value;
-    await db.collection("orders").doc(id).update({
-        status: newStatus,
-        resi: resiValue
-    });
-    alert("Status Berhasil Diperbarui!");
+async function adminUpdateStatus(id, stat) {
+    const resi = document.getElementById(`resi-${id}`).value;
+    await db.collection("orders").doc(id).update({ status: stat, resi: resi });
+    alert("Berhasil!");
 }
 
 async function adminSaveProduct() {
-  const name = document.getElementById("pName").value;
-  const price = parseInt(document.getElementById("pPrice").value);
-  const file = document.getElementById("pFile").files[0];
-  if(!name || !price) return alert("Lengkapi data!");
-  
+  const name = document.getElementById("pName").value, price = parseInt(document.getElementById("pPrice").value), file = document.getElementById("pFile").files[0];
+  if(!name || !price) return alert("Isi data!");
   showLoader(true);
   try {
-    let imgUrl = "https://via.placeholder.com/150";
-    if(file) {
-      const ref = storage.ref('produk/' + Date.now());
-      await ref.put(file);
-      imgUrl = await ref.getDownloadURL();
-    }
+    let imgUrl = "";
+    if(file) { const ref = storage.ref('produk/'+Date.now()); await ref.put(file); imgUrl = await ref.getDownloadURL(); }
     await db.collection("produk").add({ nama: name, harga: price, gambar: imgUrl, createdAt: new Date() });
-    alert("Produk ditambahkan!");
-    document.getElementById("pName").value = "";
-    document.getElementById("pPrice").value = "";
+    alert("Produk ditambah!");
   } catch (e) { alert(e.message); }
   showLoader(false);
 }
 
-async function adminSaveBanner() {
-    const file = document.getElementById("bFile").files[0];
-    if(!file) return alert("Pilih file banner!");
-    showLoader(true);
-    try {
-        const ref = storage.ref('banners/' + Date.now());
-        await ref.put(file);
-        const url = await ref.getDownloadURL();
-        await db.collection("banners").add({ url, createdAt: new Date() });
-        alert("Banner diupdate!");
-    } catch (e) { alert(e.message); }
-    showLoader(false);
-}
-
-async function updateAdminSettings(type) {
-    const val = document.getElementById("adminRek").value;
-    await db.collection("settings").doc("bank").set({ text: val });
-    alert("Info Rekening Diperbarui!");
-}
-
-function loadAdminSettings() {
-    db.collection("settings").doc("bank").get().then(doc => {
-        if(doc.exists) document.getElementById("adminRek").value = doc.data().text;
-    });
-}
-
-// --- UTILS ---
 function showLoader(show) { document.getElementById("loader").style.display = show ? "flex" : "none"; }
 function logout() { auth.signOut().then(() => location.reload()); }
-function returOrder(id) { alert("Silahkan hubungi Admin di WhatsApp untuk proses retur pesanan #" + id); }
-async function updateOrderStatus(id, status) {
-    await db.collection("orders").doc(id).update({ status: status });
-    alert("Pesanan Selesai!");
-}
+async function updateOrderStatus(id, status) { await db.collection("orders").doc(id).update({ status: status }); }
 
 function loadBanners() {
-    db.collection("banners").orderBy("createdAt", "desc").limit(3).onSnapshot(snap => {
-        const container = document.getElementById("bannerSlider");
-        container.innerHTML = "";
-        if(snap.empty) {
-            container.innerHTML = `<div class="banner-slide"><img src="https://via.placeholder.com/600x200?text=OKTSHOP17+PROMO"></div>`;
-        }
-        snap.forEach(doc => {
-            container.innerHTML += `<div class="banner-slide"><img src="${doc.data().url}"></div>`;
-        });
+    db.collection("banners").limit(3).onSnapshot(snap => {
+        const container = document.getElementById("bannerSlider"); container.innerHTML = "";
+        if(snap.empty) container.innerHTML = `<div class="banner-slide"><img src="https://via.placeholder.com/600x200?text=Promo+OKTSHOP17"></div>`;
+        snap.forEach(doc => { container.innerHTML += `<div class="banner-slide"><img src="${doc.data().url}"></div>`; });
     });
 }
 
-async function updateUserAddress() {
-    const addr = document.getElementById("newUserAddr").value;
-    await db.collection("users").doc(auth.currentUser.uid).update({ alamat: addr });
-    alert("Alamat default disimpan!");
-}
-
-// Init
-loadKatalog();
-loadBanners();
-
-// Simple Slide Animation
+loadKatalog(); loadBanners();
 let slideIdx = 0;
 setInterval(() => {
     const slider = document.getElementById("bannerSlider");
-    if(!slider) return;
-    slideIdx = (slideIdx + 1) % 3;
+    if(!slider) return; slideIdx = (slideIdx + 1) % 3;
     slider.style.transform = `translateX(-${slideIdx * 100}%)`;
 }, 4000);
-
 </script>
 
 <style>
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.btn-small { padding: 5px 10px; font-size: 11px; cursor: pointer; margin: 5px 2px 0 0; }
 </style>
 </body>
 </html>
