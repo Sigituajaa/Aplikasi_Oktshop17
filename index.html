@@ -8,98 +8,90 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   
   <style>
-    :root { --shopee-orange: #ee4d2d; --bg-light: #f5f5f5; --text-dark: #222; --green: #28a745; --red: #f44336; --blue: #007bff; }
+    :root { --shopee-orange: #ee4d2d; --bg-light: #f5f5f5; --text-dark: #222; --green: #28a745; --blue: #007bff; }
     * { box-sizing: border-box; }
-    body { font-family: 'Roboto', sans-serif; background: var(--bg-light); margin:0; color: var(--text-dark); padding-bottom: 70px; overflow-x: hidden; }
+    body { font-family: 'Roboto', sans-serif; background: var(--bg-light); margin:0; color: var(--text-dark); padding-bottom: 70px; }
 
     header { 
       background: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;
       position: sticky; top:0; z-index: 1000; box-shadow: 0 1px 5px rgba(0,0,0,0.1);
     }
-    .logo { color: var(--shopee-orange); font-weight: 800; font-size: 20px; text-decoration: none; }
-    #user-status { font-size: 12px; font-weight: bold; padding: 5px 10px; border-radius: 20px; background: var(--shopee-orange); color: white; cursor: pointer; }
+    .logo { color: var(--shopee-orange); font-weight: 800; font-size: 18px; text-decoration: none; }
+    #user-status { font-size: 12px; font-weight: bold; padding: 6px 12px; border-radius: 20px; background: var(--shopee-orange); color: white; cursor: pointer; }
 
-    /* BANNER SLIDER */
-    .banner-wrapper { width: 100%; overflow: hidden; position: relative; height: 180px; background: #ddd; }
-    .banner-container { display: flex; transition: transform 0.5s ease-in-out; height: 100%; }
+    /* BANNER - UKURAN LEBIH KECIL */
+    .banner-wrapper { width: 100%; overflow: hidden; position: relative; height: 140px; background: #eee; }
+    .banner-container { display: flex; transition: transform 0.5s; height: 100%; }
     .banner-slide { min-width: 100%; height: 100%; }
     .banner-slide img { width: 100%; height: 100%; object-fit: cover; }
 
-    .container { max-width: 800px; margin: auto; padding: 10px; }
+    .container { max-width: 600px; margin: auto; padding: 10px; }
     .view-section { display: none; }
     .active-view { display: block; }
-    .section-title { font-size: 16px; font-weight: bold; margin: 15px 0 10px; border-left: 4px solid var(--shopee-orange); padding-left: 10px; }
-    .info-box { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .section-title { font-size: 14px; font-weight: bold; margin: 15px 0 10px; border-left: 4px solid var(--shopee-orange); padding-left: 10px; text-transform: uppercase; }
+    .info-box { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
 
-    /* MENU STYLE (ADMIN & USER) */
-    .menu-item { background: white; border: 1px solid #eee; margin-bottom: 5px; border-radius: 5px; overflow: hidden; }
-    .menu-header { padding: 12px 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 500; font-size: 14px; background: #fff; }
-    .menu-header:hover { background: #fafafa; }
-    .menu-content { display: none; padding: 15px; border-top: 1px solid #eee; background: #fdfdfd; }
-    .menu-content.active { display: block; }
+    /* POIN STYLE */
+    .poin-box { background: linear-gradient(45deg, #ff9800, #ee4d2d); color: white; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 15px; }
+    .poin-value { font-size: 24px; font-weight: 800; }
 
-    /* PRODUK GRID */
-    .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .card { background: white; border-radius: 4px; overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; }
-    .card img { width: 100%; height: 150px; object-fit: cover; }
-    .card-info { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; }
-    .card-title { font-size: 13px; height: 34px; overflow: hidden; margin-bottom: 5px; }
-    .card-price { color: var(--shopee-orange); font-size: 15px; font-weight: bold; margin-bottom: 10px; }
+    .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .card { background: white; border-radius: 4px; overflow: hidden; border: 1px solid #eee; }
+    .card img { width: 100%; height: 140px; object-fit: cover; }
+    .card-info { padding: 8px; }
+    .card-title { font-size: 12px; height: 32px; overflow: hidden; margin-bottom: 5px; color: #444; }
+    .card-price { color: var(--shopee-orange); font-size: 14px; font-weight: bold; }
     
-    .btn-buy { background: var(--shopee-orange); color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 5px; font-size: 12px;}
-    .btn-stock { background: white; color: #555; border: 1px solid #ddd; padding: 8px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 12px;}
+    .btn-buy { background: var(--shopee-orange); color: white; border: none; padding: 8px; border-radius: 4px; width: 100%; font-weight: bold; cursor: pointer; font-size: 11px; margin-top: 5px; }
 
-    /* MODAL AUTH */
-    .modal { display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; }
-    .modal-content { background:white; padding:20px; border-radius:10px; width:90%; max-width:400px; }
+    /* MODAL */
+    .modal { display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; }
+    .modal-content { background:white; padding:20px; border-radius:10px; width:90%; max-width:350px; }
     .modal-tabs { display:flex; margin-bottom:15px; border-bottom:1px solid #eee; }
-    .tab { flex:1; text-align:center; padding:10px; cursor:pointer; color:#888; }
+    .tab { flex:1; text-align:center; padding:10px; cursor:pointer; color:#999; font-size: 14px; }
     .tab.active { color:var(--shopee-orange); border-bottom:2px solid var(--shopee-orange); font-weight:bold; }
 
-    .btn-action { background: var(--green); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
-    .btn-logout { background: #f44336; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 20px; }
-    
-    input, textarea, select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; font-size: 14px; }
+    input, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+    .btn-action { background: var(--shopee-orange); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
 
-    /* NAV */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; border-top: 1px solid #ddd; z-index: 1000; }
-    .nav-item { flex: 1; text-align: center; padding: 12px; font-size: 11px; color: #666; cursor: pointer; }
+    .nav-item { flex: 1; text-align: center; padding: 10px; font-size: 10px; color: #777; cursor: pointer; }
     .nav-item.active { color: var(--shopee-orange); font-weight: bold; }
 
-    #loader-global { display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; justify-content:center; align-items:center; flex-direction:column; }
-    .disabled-area { opacity: 0.5; pointer-events: none; }
+    #loader-global { display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; justify-content:center; align-items:center; }
+    .menu-item { background: white; border-bottom: 1px solid #eee; }
+    .menu-header { padding: 12px 15px; cursor: pointer; display: flex; justify-content: space-between; font-size: 13px; }
+    .menu-content { display: none; padding: 15px; background: #fafafa; }
+    .menu-content.active { display: block; }
   </style>
 </head>
 <body>
 
-<div id="loader-global">
-  <div style="border: 4px solid #f3f3f3; border-top: 4px solid var(--shopee-orange); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;"></div>
-  <p>Mohon Tunggu...</p>
-</div>
+<div id="loader-global"><p>Loading...</p></div>
 
 <!-- MODAL AUTH -->
 <div id="modalAuth" class="modal">
   <div class="modal-content">
     <div class="modal-tabs">
-      <div id="tabLogin" class="tab active" onclick="switchAuth('login')">Masuk</div>
-      <div id="tabDaftar" class="tab" onclick="switchAuth('daftar')">Daftar Baru</div>
+      <div id="tabLogin" class="tab" onclick="switchAuth('login')">Masuk</div>
+      <div id="tabDaftar" class="tab" onclick="switchAuth('daftar')">Daftar Member</div>
     </div>
     <div id="form-auth">
-      <div id="group-nama" style="display:none;"><input type="text" id="authNama" placeholder="Nama Lengkap"></div>
-      <input type="email" id="authEmail" placeholder="Alamat Email">
+      <input type="text" id="authNama" placeholder="Nama Lengkap" style="display:none;">
+      <input type="email" id="authEmail" placeholder="Email">
       <input type="password" id="authPass" placeholder="Password">
-      <button class="btn-action" id="btnSubmitAuth" onclick="submitAuth()" style="background:var(--shopee-orange)">Masuk Sekarang</button>
-      <button onclick="closeAuth()" style="width:100%; margin-top:10px; border:none; background:none; cursor:pointer;">Batal</button>
+      <button class="btn-action" id="btnSubmitAuth" onclick="submitAuth()">Masuk</button>
+      <button onclick="closeAuth()" style="width:100%; margin-top:10px; border:none; background:none; color: #999; cursor:pointer; font-size: 12px;">Nanti Saja</button>
     </div>
   </div>
 </div>
 
 <header>
   <a href="#" class="logo">OKTSHOP17</a>
-  <div id="user-status" onclick="openAuth()">Login / Daftar</div>
+  <div id="user-status" onclick="openAuth('login')">Login / Daftar</div>
 </header>
 
-<!-- VIEW HOME -->
+<!-- HOME -->
 <div id="view-home" class="view-section active-view">
   <div class="banner-wrapper">
     <div class="banner-container" id="bannerSlider"></div>
@@ -110,112 +102,60 @@
   </div>
 </div>
 
-<!-- VIEW CART -->
+<!-- CART -->
 <div id="view-cart" class="view-section">
   <div class="container">
-    <div class="section-title">Keranjang Saya</div>
-    <div class="info-box">
+    <div class="section-title">Keranjang</div>
+    <div class="info-box" id="cartContainer">
       <div id="cartItems">Memuat...</div>
-      <hr>
-      <div id="cartTotal" style="font-weight:bold; color:var(--shopee-orange); text-align:right; margin-bottom:10px; font-size:18px;">Total: Rp0</div>
-      <div id="checkout-controls" class="disabled-area">
-        <p><b>Metode Pembayaran:</b></p>
-        <div id="display-payment-info" style="font-size: 13px; margin-bottom: 10px; padding: 10px; background: #fff5f2; border-radius: 5px; border: 1px solid var(--shopee-orange);">
-            Admin belum mengatur metode pembayaran.
-        </div>
-        <button class="btn-action" onclick="checkout()">Selesaikan Pesanan</button>
-      </div>
+      <div id="cartTotal" style="font-weight:bold; color:var(--shopee-orange); text-align:right; margin-top:10px; font-size:16px;">Total: Rp0</div>
+      <button class="btn-action" onclick="checkout()">Selesaikan Pesanan</button>
     </div>
   </div>
 </div>
 
-<!-- VIEW PROFILE & ADMIN -->
+<!-- PROFILE -->
 <div id="view-profile" class="view-section">
   <div class="container">
     
-    <!-- Bagian User (Pembeli/Reseller) -->
-    <div id="user-panel">
-        <div class="info-box" style="text-align:center;">
-            <h3 id="display-name" style="margin:0;">User</h3>
-            <p id="display-email" style="font-size:12px; color:#666; margin-top:5px;"></p>
-        </div>
-
-        <div class="section-title">Pengaturan Akun</div>
-
-        <div class="menu-item">
-            <div class="menu-header" onclick="toggleMenu('u-profil')">Ubah Nama Profil <span>▼</span></div>
-            <div id="u-profil" class="menu-content">
-                <small id="name-limit-info" style="color:red; display:block; margin-bottom:5px; font-size:11px;"></small>
-                <input id="newUserName" placeholder="Nama Baru">
-                <button class="btn-action" id="btnUpdateName" onclick="updateProfileName()">Simpan Nama</button>
-            </div>
-        </div>
-
-        <div class="menu-item">
-            <div class="menu-header" onclick="toggleMenu('u-phone')">No Telepon / HP <span>▼</span></div>
-            <div id="u-phone" class="menu-content">
-                <input id="newUserPhone" placeholder="Contoh: 08123456789">
-                <button class="btn-action" onclick="updateUserData('phone')">Simpan Nomor</button>
-            </div>
-        </div>
-
-        <div class="menu-item">
-            <div class="menu-header" onclick="toggleMenu('u-address')">Alamat Penerima <span>▼</span></div>
-            <div id="u-address" class="menu-content">
-                <textarea id="newUserAddr" placeholder="Alamat lengkap pengiriman..."></textarea>
-                <button class="btn-action" onclick="updateUserData('address')">Simpan Alamat</button>
-            </div>
-        </div>
+    <div class="poin-box">
+        <div style="font-size: 12px;">Poin Member Anda</div>
+        <div class="poin-value" id="display-poin">0</div>
+        <div style="font-size: 10px; opacity: 0.8;">Belanja Rp1.000 = 1 Poin</div>
     </div>
 
-    <!-- Bagian Admin -->
-    <div id="admin-panel" style="display:none; margin-top:20px;">
-      <div class="section-title">🛠️ Panel Admin</div>
+    <div class="info-box" style="text-align:center;">
+        <h3 id="display-name" style="margin:0; font-size: 16px;">User</h3>
+        <p id="display-email" style="font-size:11px; color:#888;"></p>
+    </div>
 
-      <div class="menu-item">
-          <div class="menu-header" onclick="toggleMenu('adm-alamat')">Update Alamat Admin <span>▼</span></div>
-          <div id="adm-alamat" class="menu-content">
-              <textarea id="admInputAlamat" placeholder="Alamat Toko/Titik COD"></textarea>
-              <button class="btn-action" onclick="saveAdminSetting('alamat')">Update Alamat</button>
-          </div>
+    <div id="admin-panel" style="display:none;">
+      <div class="section-title">Panel Admin</div>
+      <div class="menu-item"><div class="menu-header" onclick="toggleMenu('adm-prod')">Tambah Produk <span>+</span></div>
+        <div id="adm-prod" class="menu-content">
+            <input id="pName" placeholder="Nama Produk">
+            <input id="pPrice" type="number" placeholder="Harga">
+            <input type="file" id="pFile" accept="image/*">
+            <button class="btn-action" onclick="adminSaveProduct()" style="background:var(--blue)">Upload</button>
+        </div>
       </div>
-
-      <div class="menu-item">
-          <div class="menu-header" onclick="toggleMenu('adm-rek')">Update No Rekening <span>▼</span></div>
-          <div id="adm-rek" class="menu-content">
-              <input id="admInputRek" placeholder="Contoh: BCA 123456 a/n Nama">
-              <button class="btn-action" onclick="saveAdminSetting('rekening')">Update Rekening</button>
-          </div>
-      </div>
-
-      <div class="menu-item">
-          <div class="menu-header" onclick="toggleMenu('adm-katalog')">Update Katalog Produk <span>▼</span></div>
-          <div id="adm-katalog" class="menu-content">
-              <input id="pName" placeholder="Nama Produk">
-              <input id="pPrice" type="number" placeholder="Harga">
-              <input type="file" id="pFile" accept="image/*">
-              <button class="btn-action" onclick="adminSaveProduct()" style="background:var(--blue)">Upload Produk</button>
-          </div>
-      </div>
-
-      <div class="menu-item">
-          <div class="menu-header" onclick="toggleMenu('adm-ship')">Update Pengiriman <span>▼</span></div>
-          <div id="adm-ship" class="menu-content">
-              <input id="admInputShip" placeholder="Contoh: JNT, JNE, Ojek Online">
-              <button class="btn-action" onclick="saveAdminSetting('pengiriman')">Update Opsi Kirim</button>
-          </div>
-      </div>
-
-      <div class="menu-item">
-          <div class="menu-header" onclick="toggleMenu('adm-banner')">Update Banner <span>▼</span></div>
-          <div id="adm-banner" class="menu-content">
-              <input type="file" id="pBanner" accept="image/*">
-              <button class="btn-action" onclick="adminUploadBanner()" style="background:var(--blue)">Upload Banner</button>
-          </div>
+      <div class="menu-item"><div class="menu-header" onclick="toggleMenu('adm-ban')">Update Banner <span>+</span></div>
+        <div id="adm-ban" class="menu-content">
+            <input type="file" id="pBanner" accept="image/*">
+            <button class="btn-action" onclick="adminUploadBanner()" style="background:var(--blue)">Upload Banner</button>
+        </div>
       </div>
     </div>
 
-    <button class="btn-logout" onclick="logout()">LOGOUT APLIKASI</button>
+    <div class="section-title">Informasi Akun</div>
+    <div class="menu-item"><div class="menu-header" onclick="toggleMenu('u-phone')">Nomor HP <span>></span></div>
+        <div id="u-phone" class="menu-content"><input id="newUserPhone" placeholder="08xxx"><button class="btn-action" onclick="updateUserData('phone')">Simpan</button></div>
+    </div>
+    <div class="menu-item"><div class="menu-header" onclick="toggleMenu('u-addr')">Alamat Pengiriman <span>></span></div>
+        <div id="u-addr" class="menu-content"><textarea id="newUserAddr"></textarea><button class="btn-action" onclick="updateUserData('address')">Simpan</button></div>
+    </div>
+
+    <button class="btn-action" onclick="logout()" style="background:#f44336; margin-top: 20px;">Keluar</button>
   </div>
 </div>
 
@@ -231,7 +171,7 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
 <script>
-// --- CONFIG FIREBASE ---
+// --- CONFIG (Tetap Sama) ---
 const firebaseConfig = {
   apiKey: "AIzaSyBIEWYrwHKFaDMDM6hs-1iE_OxPCmjtoFA",
   authDomain: "toko-online-oktshop17.firebaseapp.com",
@@ -241,20 +181,10 @@ const firebaseConfig = {
   appId: "1:191593492765:web:673089bd829250865ff1f4"
 };
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-const storage = firebase.storage();
+const auth = firebase.auth(), db = firebase.firestore(), storage = firebase.storage();
+let currentTotal = 0;
 
-let currentUserData = null;
-
-// --- UTILITY ---
-function toggleMenu(id) {
-    const el = document.getElementById(id);
-    const isOpen = el.classList.contains('active');
-    document.querySelectorAll('.menu-content').forEach(m => m.classList.remove('active'));
-    if (!isOpen) el.classList.add('active');
-}
-
+// --- CORE FUNCTIONS ---
 function showView(viewId, el) {
   document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -262,137 +192,89 @@ function showView(viewId, el) {
   if(el) el.classList.add('active');
 }
 
-// --- AUTH ---
-function openAuth() { document.getElementById("modalAuth").style.display = "flex"; }
+function toggleMenu(id) {
+    const el = document.getElementById(id);
+    const isAct = el.classList.contains('active');
+    document.querySelectorAll('.menu-content').forEach(m => m.classList.remove('active'));
+    if(!isAct) el.classList.add('active');
+}
+
+// --- AUTH LOGIC (Updated for Automatic Signup) ---
+function openAuth(mode = 'login') {
+  document.getElementById("modalAuth").style.display = "flex";
+  switchAuth(mode);
+}
 function closeAuth() { document.getElementById("modalAuth").style.display = "none"; }
 function switchAuth(mode) {
+  window.modeAuth = mode;
   document.getElementById("tabLogin").classList.toggle("active", mode === 'login');
   document.getElementById("tabDaftar").classList.toggle("active", mode === 'daftar');
-  document.getElementById("group-nama").style.display = (mode === 'daftar') ? 'block' : 'none';
-  document.getElementById("btnSubmitAuth").innerText = (mode === 'login') ? 'Masuk Sekarang' : 'Daftar Akun';
-  window.modeAuth = mode;
+  document.getElementById("authNama").style.display = (mode === 'daftar') ? 'block' : 'none';
+  document.getElementById("btnSubmitAuth").innerText = (mode === 'login') ? 'Masuk' : 'Daftar Sekarang';
 }
 
 async function submitAuth() {
   const email = document.getElementById("authEmail").value;
   const pass = document.getElementById("authPass").value;
   const nama = document.getElementById("authNama").value;
-  if(!email || !pass) return alert("Isi email dan password!");
+  if(!email || !pass) return alert("Lengkapi form!");
   
-  document.getElementById("loader-global").style.display = "flex";
   try {
     if(window.modeAuth === 'daftar') {
       const res = await auth.createUserWithEmailAndPassword(email, pass);
-      await db.collection("users").doc(res.user.uid).set({ 
-          nama: nama, role: "pembeli", lastUpdate: firebase.firestore.FieldValue.serverTimestamp() 
-      });
+      await db.collection("users").doc(res.user.uid).set({ nama, role: "pembeli", poin: 0 });
     } else {
       await auth.signInWithEmailAndPassword(email, pass);
     }
     closeAuth();
   } catch (err) { alert(err.message); }
-  document.getElementById("loader-global").style.display = "none";
 }
 
-// --- USER LOGIC ---
-async function updateProfileName() {
-    const newName = document.getElementById("newUserName").value;
-    if(!newName) return alert("Nama tidak boleh kosong");
+// --- POINT & CHECKOUT LOGIC ---
+async function checkout() {
+  if(!auth.currentUser) return openAuth('daftar'); // Otomatis ke menu daftar jika belum member
+  if(currentTotal === 0) return alert("Keranjang kosong!");
 
-    const now = new Date();
-    const lastUpdate = currentUserData.lastUpdate ? currentUserData.lastUpdate.toDate() : new Date(0);
-    const diffTime = Math.abs(now - lastUpdate);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays < 30) {
-        return alert(`Anda baru bisa mengganti nama setelah 30 hari. (Sisa ${30 - diffDays} hari lagi)`);
-    }
-
-    try {
-        await db.collection("users").doc(auth.currentUser.uid).update({
-            nama: newName,
-            lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        alert("Nama berhasil diperbarui!");
-        toggleMenu('u-profil');
-    } catch (e) { alert(e.message); }
-}
-
-async function updateUserData(field) {
-    const val = field === 'phone' ? document.getElementById("newUserPhone").value : document.getElementById("newUserAddr").value;
-    const key = field === 'phone' ? 'phone' : 'address';
-    try {
-        await db.collection("users").doc(auth.currentUser.uid).update({ [key]: val });
-        alert("Data berhasil disimpan!");
-        toggleMenu(field === 'phone' ? 'u-phone' : 'u-address');
-    } catch (e) { alert(e.message); }
-}
-
-// --- ADMIN LOGIC ---
-async function saveAdminSetting(type) {
-    let val = "";
-    if(type === 'alamat') val = document.getElementById("admInputAlamat").value;
-    if(type === 'rekening') val = document.getElementById("admInputRek").value;
-    if(type === 'pengiriman') val = document.getElementById("admInputShip").value;
-
-    try {
-        await db.collection("settings").doc("general").set({ [type]: val }, { merge: true });
-        alert("Pengaturan Berhasil Disimpan!");
-    } catch (e) { alert(e.message); }
-}
-
-async function adminSaveProduct() {
-  const name = document.getElementById("pName").value;
-  const price = parseInt(document.getElementById("pPrice").value);
-  const file = document.getElementById("pFile").files[0];
-  if(!name || !price || !file) return alert("Lengkapi data!");
-  document.getElementById("loader-global").style.display = "flex";
+  const poinDidapat = Math.floor(currentTotal / 1000);
+  
   try {
-    const ref = storage.ref('produk/' + Date.now());
-    await ref.put(file);
-    const url = await ref.getDownloadURL();
-    await db.collection("produk").add({ nama: name, harga: price, gambar: url, createdAt: new Date() });
-    alert("Produk Terupload!");
-    toggleMenu('adm-katalog');
+    // Tambah Poin ke User
+    await db.collection("users").doc(auth.currentUser.uid).update({
+        poin: firebase.firestore.FieldValue.increment(poinDidapat)
+    });
+    
+    // Hapus Keranjang (Simulasi Sederhana)
+    const items = await db.collection("cart").doc(auth.currentUser.uid).collection("items").get();
+    items.forEach(d => d.ref.delete());
+    
+    alert(`Pesanan Berhasil! Anda mendapatkan ${poinDidapat} Poin.`);
   } catch (e) { alert(e.message); }
-  document.getElementById("loader-global").style.display = "none";
 }
 
-async function adminUploadBanner() {
-    const file = document.getElementById("pBanner").files[0];
-    if(!file) return alert("Pilih file!");
-    document.getElementById("loader-global").style.display = "flex";
-    try {
-        const ref = storage.ref('banners/' + Date.now());
-        await ref.put(file);
-        const url = await ref.getDownloadURL();
-        await db.collection("banners").add({ url: url, createdAt: new Date() });
-        alert("Banner Berhasil Ditambah!");
-    } catch (e) { alert(e.message); }
-    document.getElementById("loader-global").style.display = "none";
-}
-
-// --- DATA LOADERS ---
+// --- DATA LISTENERS ---
 auth.onAuthStateChanged(user => {
   if(user) {
     db.collection("users").doc(user.uid).onSnapshot(doc => {
-      currentUserData = doc.data();
-      document.getElementById("display-name").innerText = currentUserData.nama || "User";
+      const data = doc.data();
+      if(!data) return;
+      
+      // Update Greet Label (Point 3)
+      let label = "";
+      if(data.role === 'admin') label = "Admin User";
+      else if(data.role === 'reseller') label = "Reseller";
+      else label = "Hi " + (data.nama || "Member");
+      
+      document.getElementById("user-status").innerText = label;
+      document.getElementById("display-name").innerText = data.nama || "User";
       document.getElementById("display-email").innerText = user.email;
-      document.getElementById("user-status").innerText = currentUserData.nama || "Member";
+      document.getElementById("display-poin").innerText = (data.poin || 0).toLocaleString();
       
-      // Update UI Inputs
-      document.getElementById("newUserPhone").value = currentUserData.phone || "";
-      document.getElementById("newUserAddr").value = currentUserData.address || "";
-
-      if(currentUserData.role === "admin") document.getElementById("admin-panel").style.display = "block";
-      
-      // Info 30 Hari
-      const lastUpdate = currentUserData.lastUpdate ? currentUserData.lastUpdate.toDate() : new Date(0);
-      const diffDays = Math.ceil(Math.abs(new Date() - lastUpdate) / (1000 * 60 * 60 * 24));
-      document.getElementById("name-limit-info").innerText = diffDays < 30 ? `Tersedia dalam ${30-diffDays} hari` : "Nama bisa diganti sekarang.";
+      if(data.role === 'admin') document.getElementById("admin-panel").style.display = "block";
     });
     loadCart(user.uid);
+  } else {
+    document.getElementById("user-status").innerText = "Login / Daftar";
+    document.getElementById("admin-panel").style.display = "none";
   }
 });
 
@@ -408,15 +290,64 @@ function loadKatalog() {
           <div class="card-info">
             <div class="card-title">${p.nama}</div>
             <div class="card-price">Rp${p.harga.toLocaleString()}</div>
-            <button class="btn-buy" onclick="addToCart('${doc.id}','${p.nama}',${p.harga})">🛒 + Keranjang</button>
+            <button class="btn-buy" onclick="addToCart('${p.nama}',${p.harga})"> + Keranjang</button>
           </div>
         </div>`;
     });
   });
 }
 
+function loadCart(uid) {
+  db.collection("cart").doc(uid).collection("items").onSnapshot(snap => {
+    const list = document.getElementById("cartItems");
+    currentTotal = 0;
+    list.innerHTML = snap.empty ? "Keranjang Kosong" : "";
+    snap.forEach(doc => {
+      currentTotal += doc.data().harga;
+      list.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
+        <span>${doc.data().nama}</span> <b>Rp${doc.data().harga.toLocaleString()}</b>
+      </div>`;
+    });
+    document.getElementById("cartTotal").innerText = "Total: Rp" + currentTotal.toLocaleString();
+  });
+}
+
+function addToCart(n, h) {
+  if(!auth.currentUser) return openAuth('daftar');
+  db.collection("cart").doc(auth.currentUser.uid).collection("items").add({ nama: n, harga: h });
+  alert("Masuk Keranjang!");
+}
+
+// --- ADMIN ACTION ---
+async function adminSaveProduct() {
+  const name = document.getElementById("pName").value;
+  const price = parseInt(document.getElementById("pPrice").value);
+  const file = document.getElementById("pFile").files[0];
+  if(!name || !price || !file) return alert("Lengkapi data!");
+  
+  try {
+    const ref = storage.ref('produk/' + Date.now());
+    await ref.put(file);
+    const url = await ref.getDownloadURL();
+    await db.collection("produk").add({ nama: name, harga: price, gambar: url, createdAt: new Date() });
+    alert("Produk Berhasil Ditambah!");
+  } catch (e) { alert(e.message); }
+}
+
+async function adminUploadBanner() {
+    const file = document.getElementById("pBanner").files[0];
+    if(!file) return alert("Pilih file!");
+    try {
+        const ref = storage.ref('banners/' + Date.now());
+        await ref.put(file);
+        const url = await ref.getDownloadURL();
+        await db.collection("banners").add({ url: url, createdAt: new Date() });
+        alert("Banner Update!");
+    } catch (e) { alert(e.message); }
+}
+
 function loadBanners() {
-    db.collection("banners").orderBy("createdAt", "desc").onSnapshot(snap => {
+    db.collection("banners").orderBy("createdAt", "desc").limit(3).onSnapshot(snap => {
         const container = document.getElementById("bannerSlider");
         container.innerHTML = "";
         snap.forEach(doc => {
@@ -425,49 +356,11 @@ function loadBanners() {
     });
 }
 
-function loadCart(uid) {
-  db.collection("cart").doc(uid).collection("items").onSnapshot(snap => {
-    const list = document.getElementById("cartItems");
-    const controls = document.getElementById("checkout-controls");
-    let total = 0;
-    list.innerHTML = snap.empty ? "Keranjang Kosong" : "";
-    snap.forEach(doc => {
-      total += doc.data().harga;
-      list.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px;"><span>${doc.data().nama}</span> <b>Rp${doc.data().harga.toLocaleString()}</b></div>`;
-    });
-    document.getElementById("cartTotal").innerText = "Total: Rp" + total.toLocaleString();
-    if(!snap.empty) controls.classList.remove("disabled-area");
-    
-    // Load Admin Payment Info to Cart
-    db.collection("settings").doc("general").get().then(doc => {
-        if(doc.exists) {
-            document.getElementById("display-payment-info").innerHTML = `
-                <b>Transfer:</b> ${doc.data().rekening || '-'}<br>
-                <b>Pengiriman:</b> ${doc.data().pengiriman || '-'}<br>
-                <b>Alamat Admin:</b> ${doc.data().alamat || '-'}
-            `;
-        }
-    });
-  });
-}
-
-function addToCart(id, n, h) {
-  if(!auth.currentUser) return openAuth();
-  db.collection("cart").doc(auth.currentUser.uid).collection("items").add({ nama: n, harga: h });
-  alert("Berhasil ditambah!");
-}
-
 function logout() { auth.signOut().then(() => location.reload()); }
 
-// Initialize
+// Init
 loadKatalog();
 loadBanners();
-switchAuth('login');
 </script>
-
-<style>
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-</style>
-
 </body>
-</html>
+  </html>
