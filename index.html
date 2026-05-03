@@ -5,93 +5,25 @@
   <title>OKTSHOP17 | Official Store</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-  
-  <style>
-    :root { --shopee-orange: #ee4d2d; --bg-light: #f5f5f5; --text-dark: #222; --green: #28a745; --blue: #007bff; --grey: #bbb; --light-grey: #eee; }
-    * { box-sizing: border-box; }
-    body { font-family: 'Roboto', sans-serif; background: var(--bg-light); margin:0; color: var(--text-dark); padding-bottom: 80px; }
-
-    header { 
-      background: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;
-      position: sticky; top:0; z-index: 1000; box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-    }
-    .logo { color: var(--shopee-orange); font-weight: 800; font-size: 18px; text-decoration: none; }
-    #user-status { font-size: 12px; font-weight: bold; padding: 6px 12px; border-radius: 20px; background: var(--shopee-orange); color: white; cursor: pointer; }
-
-    .banner-wrapper { width: 100%; height: 140px; background: #ddd; overflow: hidden; position: relative; }
-    .banner-container { display: flex; height: 100%; transition: 0.5s; }
-    .banner-slide { min-width: 100%; height: 100%; }
-    .banner-slide img { width: 100%; height: 100%; object-fit: cover; }
-
-    .container { max-width: 600px; margin: auto; padding: 10px; }
-    .view-section { display: none; }
-    .active-view { display: block; }
-    .section-title { font-size: 14px; font-weight: bold; margin: 15px 0 10px; border-left: 4px solid var(--shopee-orange); padding-left: 10px; text-transform: uppercase; }
-    
-    .info-box { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-    
-    /* PRODUK */
-    .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .card { background: white; border-radius: 4px; overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; }
-    .card img { width: 100%; height: 130px; object-fit: cover; }
-    .card-info { padding: 8px; flex: 1; }
-    .card-title { font-size: 12px; height: 32px; overflow: hidden; margin-bottom: 5px; }
-    .card-price { color: var(--shopee-orange); font-size: 14px; font-weight: bold; }
-    .btn-buy { background: var(--shopee-orange); color: white; border: none; padding: 8px; border-radius: 4px; width: 100%; font-weight: bold; cursor: pointer; font-size: 11px; margin-top: 5px; }
-
-    /* FORM & INPUT */
-    label { font-size: 12px; font-weight: bold; color: #555; margin-top: 10px; display: block; }
-    input, select, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; font-family: inherit; }
-    .btn-action { background: var(--shopee-orange); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
-    .btn-outline { background: white; border: 1px solid var(--shopee-orange); color: var(--shopee-orange); padding: 8px; border-radius: 4px; width: 100%; font-size: 12px; cursor: pointer; margin-top: 5px; }
-
-    /* STATUS TRACKER */
-    .card-order { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #eee; position: relative; }
-    .order-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; margin-bottom: 10px; }
-    .status-container { display: flex; justify-content: space-between; margin: 15px 0; position: relative; }
-    .status-container::before { content: ''; position: absolute; top: 12px; left: 10%; right: 10%; height: 2px; background: #ddd; z-index: 1; }
-    .step { z-index: 2; text-align: center; flex: 1; font-size: 10px; color: var(--grey); font-weight: bold; }
-    .step-icon { width: 25px; height: 25px; background: #ddd; border-radius: 50%; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; }
-    /* Active States */
-    .step.active-proses .step-icon { background: orange; }
-    .step.active-proses { color: orange; }
-    .step.active-kirim .step-icon { background: var(--blue); }
-    .step.active-kirim { color: var(--blue); }
-    .step.active-selesai .step-icon { background: var(--green); }
-    .step.active-selesai { color: var(--green); }
-
-    /* NAV */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; border-top: 1px solid #ddd; z-index: 1000; }
-    .nav-item { flex: 1; text-align: center; padding: 10px; font-size: 10px; color: #777; cursor: pointer; }
-    .nav-item.active { color: var(--shopee-orange); font-weight: bold; }
-
-    /* ADMIN & MENU */
-    .menu-item { background: white; border-bottom: 1px solid #eee; }
-    .menu-header { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; font-size: 14px; }
-    .menu-content { display: none; padding: 15px; background: #fafafa; }
-    .menu-content.active { display: block; }
-    
-    #loader { display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; align-items:center; justify-content:center; flex-direction: column; }
-    .modal { display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; }
-    .modal-content { background:white; padding:20px; border-radius:10px; width:90%; max-width:350px; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div id="loader">
-    <div style="border: 4px solid #f3f3f3; border-top: 4px solid var(--shopee-orange); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite;"></div>
+    <div class="spinner"></div>
     <p>Memproses...</p>
 </div>
 
+<!-- Modal Auth -->
 <div id="modalAuth" class="modal">
   <div class="modal-content">
-    <h3 id="authTitle" style="margin-top:0; color:var(--shopee-orange)">Masuk</h3>
+    <h3 id="authTitle">Masuk</h3>
     <input type="text" id="authNama" placeholder="Nama Lengkap" style="display:none;">
     <input type="email" id="authEmail" placeholder="Email">
     <input type="password" id="authPass" placeholder="Password">
     <button class="btn-action" onclick="submitAuth()">Konfirmasi</button>
-    <p id="switchAuthBtn" style="text-align:center; font-size:12px; color:var(--blue); cursor:pointer;" onclick="toggleAuthMode()">Belum punya akun? Daftar</p>
-    <button onclick="closeAuth()" style="width:100%; margin-top:5px; border:none; background:none; color: #999; font-size: 12px;">Batal</button>
+    <p id="switchAuthBtn" onclick="toggleAuthMode()">Belum punya akun? Daftar</p>
+    <button onclick="closeAuth()" class="btn-flat">Batal</button>
   </div>
 </div>
 
@@ -117,45 +49,38 @@
     <div class="section-title">Keranjang Belanja</div>
     <div class="info-box">
       <div id="cartItems">Memuat...</div>
-      <div id="cartTotal" style="font-weight:bold; color:var(--shopee-orange); text-align:right; margin-top:10px; font-size:16px;">Total: Rp0</div>
+      <div id="cartTotal" class="total-text">Total: Rp0</div>
     </div>
 
     <div id="checkout-form" style="display:none;">
-        <div class="section-title">Informasi Pengiriman & Pembayaran</div>
+        <div class="section-title">Informasi Checkout</div>
         <div class="info-box">
-            <label>Data Penerima (Wajib):</label>
-            <input type="text" id="shipNama" placeholder="Nama Lengkap Penerima">
-            <input type="number" id="shipHp" placeholder="No. HP / WhatsApp">
-            <textarea id="shipAlamat" placeholder="Alamat Lengkap (Jalan, No Rumah, Kel/Kec, Kota)"></textarea>
-
-            <label>Jenis Pengiriman (Wajib):</label>
+            <label>Pilih Kurir:</label>
             <select id="shipMethod">
-                <option value="">-- Pilih Kurir --</option>
                 <option value="JNT">JNT</option>
                 <option value="JNE">JNE</option>
                 <option value="SICEPAT">SICEPAT</option>
-                <option value="COD">Kurir Internal (Khusus COD)</option>
+                <option value="COD">Kurir Internal (COD)</option>
             </select>
 
-            <label>Metode Pembayaran (Wajib):</label>
+            <label>Metode Pembayaran:</label>
             <select id="payMethod" onchange="toggleBuktiTransfer()">
-                <option value="">-- Pilih Pembayaran --</option>
-                <option value="Transfer Bank">Transfer Bank</option>
+                <option value="Transfer Bank">Transfer Bank (Wajib Upload Bukti)</option>
                 <option value="COD">COD (Bayar di Tempat)</option>
             </select>
             
-            <div id="boxBuktiTransfer" style="display:none; background:#fff9f9; padding:10px; border:1px dashed var(--shopee-orange); margin-top:10px; border-radius:5px;">
-                <p style="font-size:11px; margin:0 0 5px 0;">Silahkan upload bukti transfer (Opsional)</p>
-                <input type="file" id="buktiFile" accept="image/*" style="font-size:11px;">
+            <div id="boxBuktiTransfer" class="upload-box">
+                <p>Upload Bukti Transfer (Max 1 Jam):</p>
+                <input type="file" id="buktiFile" accept="image/*">
             </div>
 
-            <button class="btn-action" onclick="processCheckout()">Bayar Sekarang</button>
+            <button class="btn-action" onclick="processCheckout()">Buat Pesanan Sekarang</button>
         </div>
     </div>
     
-    <div id="login-to-checkout" class="info-box" style="text-align:center;">
-        <p style="font-size:13px; color:#666;">Silahkan Login untuk melanjutkan pemesanan</p>
-        <button class="btn-action" onclick="openAuth('login')">Login Sekarang</button>
+    <div id="login-to-checkout" class="info-box" style="display:none; text-align:center;">
+        <p>Silahkan Login untuk checkout</p>
+        <button class="btn-action" onclick="openAuth('login')">Login</button>
     </div>
   </div>
 </div>
@@ -163,35 +88,30 @@
 <!-- PROFILE VIEW -->
 <div id="view-profile" class="view-section">
   <div class="container">
-    <div class="section-title">Profil Saya</div>
-    <div class="info-box" style="display:flex; align-items:center;">
-        <div style="width:50px; height:50px; background:var(--shopee-orange); border-radius:50%; color:white; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:bold; margin-right:15px;" id="user-initial">U</div>
-        <div>
-            <b id="display-name" style="font-size: 16px;">Memuat...</b><br>
-            <span id="display-email" style="font-size: 12px; color: #777;"></span>
-        </div>
+    <div class="section-title">Data Profil</div>
+    <div class="info-box profile-card">
+        <label>Nama Lengkap:</label>
+        <input type="text" id="profNama">
+        <label>No. HP / WhatsApp:</label>
+        <input type="number" id="profHp">
+        <label>Alamat Lengkap Penerima:</label>
+        <textarea id="profAlamat" rows="3"></textarea>
+        <button class="btn-outline" onclick="updateProfile()">Simpan Perubahan</button>
     </div>
 
     <div class="section-title">Pesanan Saya</div>
-    <div id="userOrders">Belum ada pesanan.</div>
+    <div id="userOrders">Memuat pesanan...</div>
 
     <!-- Admin Panel -->
-    <div id="admin-panel" style="display:none; margin-top:20px;">
+    <div id="admin-panel" style="display:none;">
       <div class="section-title">Panel Admin</div>
-      <div class="menu-item"><div class="menu-header" onclick="toggleMenu('adm-pesanan')">Kelola Pesanan Masuk <span>+</span></div>
+      <div class="menu-item">
+        <div class="menu-header" onclick="toggleMenu('adm-pesanan')">Kelola Pesanan <span>+</span></div>
         <div id="adm-pesanan" class="menu-content"><div id="adminOrderList"></div></div>
-      </div>
-      <div class="menu-item"><div class="menu-header" onclick="toggleMenu('adm-prod')">Tambah Produk <span>+</span></div>
-        <div id="adm-prod" class="menu-content">
-            <input id="pName" placeholder="Nama Produk">
-            <input id="pPrice" type="number" placeholder="Harga">
-            <input type="file" id="pFile" accept="image/*">
-            <button class="btn-action" onclick="adminSaveProduct()" style="background:var(--blue)">Simpan</button>
-        </div>
       </div>
     </div>
 
-    <button class="btn-action" onclick="logout()" style="background:#666; margin-top: 40px; margin-bottom: 20px;">Keluar Aplikasi</button>
+    <button class="btn-action" onclick="logout()" style="background:#666; margin-top:30px;">Logout</button>
   </div>
 </div>
 
@@ -201,265 +121,11 @@
   <div class="nav-item" onclick="showView('profile', this)">👤<br>Profil</div>
 </div>
 
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-
-<script>
-// --- CONFIG FIREBASE ---
-const firebaseConfig = {
-  apiKey: "AIzaSyBIEWYrwHKFaDMDM6hs-1iE_OxPCmjtoFA",
-  authDomain: "toko-online-oktshop17.firebaseapp.com",
-  projectId: "toko-online-oktshop17",
-  storageBucket: "toko-online-oktshop17.appspot.com",
-  messagingSenderId: "191593492765",
-  appId: "1:191593492765:web:673089bd829250865ff1f4"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth(), db = firebase.firestore(), storage = firebase.storage();
-
-let currentTotal = 0, cartItemsData = [], modeAuth = 'login';
-
-function showView(viewId, el) {
-  document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('view-' + viewId).classList.add('active-view');
-  if(el) el.classList.add('active');
-}
-
-function toggleMenu(id) { document.getElementById(id).classList.toggle('active'); }
-function openAuth(mode) {
-    modeAuth = mode;
-    document.getElementById("modalAuth").style.display = "flex";
-    document.getElementById("authTitle").innerText = mode === 'login' ? 'Masuk' : 'Daftar Member';
-    document.getElementById("authNama").style.display = mode === 'daftar' ? 'block' : 'none';
-}
-function closeAuth() { document.getElementById("modalAuth").style.display = "none"; }
-function toggleAuthMode() { modeAuth = (modeAuth === 'login') ? 'daftar' : 'login'; openAuth(modeAuth); }
-
-async function submitAuth() {
-  const email = document.getElementById("authEmail").value, pass = document.getElementById("authPass").value, nama = document.getElementById("authNama").value;
-  if(!email || !pass) return alert("Isi email & password!");
-  showLoader(true);
-  try {
-    if(modeAuth === 'daftar') {
-      const res = await auth.createUserWithEmailAndPassword(email, pass);
-      await db.collection("users").doc(res.user.uid).set({ nama, role: "pembeli", createdAt: new Date() });
-    } else { await auth.signInWithEmailAndPassword(email, pass); }
-    closeAuth();
-  } catch (err) { alert(err.message); }
-  showLoader(false);
-}
-
-function toggleBuktiTransfer() {
-    const pay = document.getElementById("payMethod").value;
-    document.getElementById("boxBuktiTransfer").style.display = (pay === 'Transfer Bank') ? 'block' : 'none';
-}
-
-auth.onAuthStateChanged(user => {
-  if(user) {
-    document.getElementById("login-to-checkout").style.display = "none";
-    document.getElementById("checkout-form").style.display = "block";
-    db.collection("users").doc(user.uid).onSnapshot(doc => {
-      const data = doc.data(); if(!data) return;
-      document.getElementById("user-status").innerText = "Hi, " + (data.nama || "User");
-      document.getElementById("display-name").innerText = data.nama || "User";
-      document.getElementById("user-initial").innerText = (data.nama ? data.nama[0] : "U").toUpperCase();
-      document.getElementById("display-email").innerText = user.email;
-      if(data.role === 'admin') {
-          document.getElementById("admin-panel").style.display = "block";
-          loadAdminOrders();
-      }
-    });
-    loadCart(user.uid);
-    loadUserOrders(user.uid);
-  } else {
-    document.getElementById("user-status").innerText = "Login / Daftar";
-    document.getElementById("checkout-form").style.display = "none";
-    document.getElementById("login-to-checkout").style.display = "block";
-    document.getElementById("admin-panel").style.display = "none";
-  }
-});
-
-function loadKatalog() {
-  db.collection("produk").orderBy("createdAt", "desc").onSnapshot(snap => {
-    const list = document.getElementById("listProduk"); list.innerHTML = "";
-    snap.forEach(doc => {
-      const p = doc.data();
-      list.innerHTML += `<div class="card">
-          <img src="${p.gambar || 'https://via.placeholder.com/150'}">
-          <div class="card-info">
-            <div class="card-title">${p.nama}</div>
-            <div class="card-price">Rp${p.harga.toLocaleString()}</div>
-            <button class="btn-buy" onclick="addToCart('${doc.id}', '${p.nama}', ${p.harga})">Tambah 🛒</button>
-          </div>
-        </div>`;
-    });
-  });
-}
-
-function addToCart(id, n, h) {
-  if(!auth.currentUser) return openAuth('login');
-  db.collection("cart").doc(auth.currentUser.uid).collection("items").add({ productId: id, nama: n, harga: h });
-  alert("Berhasil ditambah ke keranjang!");
-}
-
-function loadCart(uid) {
-  db.collection("cart").doc(uid).collection("items").onSnapshot(snap => {
-    const list = document.getElementById("cartItems");
-    currentTotal = 0; cartItemsData = [];
-    list.innerHTML = snap.empty ? "<p style='color:#999'>Keranjang kosong</p>" : "";
-    snap.forEach(doc => {
-      const item = doc.data(); currentTotal += item.harga; cartItemsData.push(item);
-      list.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
-        <span>${item.nama}</span> <b>Rp${item.harga.toLocaleString()}</b>
-      </div>`;
-    });
-    document.getElementById("cartTotal").innerText = "Total: Rp" + currentTotal.toLocaleString();
-  });
-}
-
-async function processCheckout() {
-    const user = auth.currentUser;
-    const name = document.getElementById("shipNama").value;
-    const addr = document.getElementById("shipAlamat").value;
-    const hp = document.getElementById("shipHp").value;
-    const pay = document.getElementById("payMethod").value;
-    const ship = document.getElementById("shipMethod").value;
-    const file = document.getElementById("buktiFile").files[0];
-
-    if(cartItemsData.length === 0) return alert("Keranjang kosong!");
-    if(!name || !addr || !hp || !pay || !ship) return alert("Mohon lengkapi data diri, pengiriman, dan pembayaran!");
-
-    showLoader(true);
-    try {
-        let buktiUrl = "";
-        if(file) {
-            const ref = storage.ref(`bukti_transfer/${user.uid}_${Date.now()}`);
-            await ref.put(file);
-            buktiUrl = await ref.getDownloadURL();
-        }
-
-        const counterRef = db.collection("settings").doc("orderCounter");
-        const counterDoc = await counterRef.get();
-        let currentCount = counterDoc.exists ? counterDoc.data().count + 1 : 1;
-        await counterRef.set({ count: currentCount });
-        const orderID = "OKT" + String(currentCount).padStart(5, '0');
-
-        await db.collection("orders").add({
-            orderID, uid: user.uid, items: cartItemsData, total: currentTotal,
-            penerima: name, alamat: addr, hp, metodeBayar: pay, metodeKirim: ship,
-            status: "proses", resi: "", buktiTransfer: buktiUrl, createdAt: new Date()
-        });
-
-        const items = await db.collection("cart").doc(user.uid).collection("items").get();
-        items.forEach(d => d.ref.delete());
-
-        alert(`Pesanan Berhasil!\nOrder ID: ${orderID}`);
-        showView('profile', document.querySelectorAll('.nav-item')[2]);
-    } catch (e) { alert(e.message); }
-    showLoader(false);
-}
-
-function loadUserOrders(uid) {
-    db.collection("orders").where("uid", "==", uid).orderBy("createdAt", "desc").onSnapshot(snap => {
-        const list = document.getElementById("userOrders");
-        list.innerHTML = snap.empty ? "Belum ada pesanan." : "";
-        snap.forEach(doc => {
-            const o = doc.data();
-            const s = o.status; // proses, kirim, selesai
-            list.innerHTML += `
-                <div class="card-order">
-                    <div class="order-header">
-                        <b style="color:var(--shopee-orange)">#${o.orderID}</b>
-                        <small style="color:#999">${o.createdAt.toDate().toLocaleDateString()}</small>
-                    </div>
-                    <div style="font-size:12px; margin-bottom:5px;">No. Resi: <b style="color:var(--blue)">${o.resi || 'Belum Ada'}</b></div>
-                    
-                    <div class="status-container">
-                        <div class="step ${s==='proses'||s==='kirim'||s==='selesai'?'active-proses':''}">
-                            <div class="step-icon">1</div>Proses
-                        </div>
-                        <div class="step ${s==='kirim'||s==='selesai'?'active-kirim':''}">
-                            <div class="step-icon">2</div>Kirim
-                        </div>
-                        <div class="step ${s==='selesai'?'active-selesai':''}">
-                            <div class="step-icon">3</div>Selesai
-                        </div>
-                    </div>
-
-                    <div style="font-size:11px; color:#666; background:#f9f9f9; padding:8px; border-radius:4px;">
-                        Penerima: ${o.penerima}<br>
-                        Kurir: ${o.metodeKirim} | Total: Rp${o.total.toLocaleString()}
-                    </div>
-                    ${s === 'kirim' ? `<button class="btn-outline" onclick="updateOrderStatus('${doc.id}', 'selesai')">Konfirmasi Diterima</button>` : ''}
-                </div>`;
-        });
-    });
-}
-
-// --- ADMIN ---
-function loadAdminOrders() {
-    db.collection("orders").orderBy("createdAt", "desc").onSnapshot(snap => {
-        const list = document.getElementById("adminOrderList"); list.innerHTML = "";
-        snap.forEach(doc => {
-            const o = doc.data();
-            list.innerHTML += `<div class="card-order" style="font-size:12px;">
-                <b>Order #${o.orderID}</b><br>
-                Penerima: ${o.penerima} (${o.hp})<br>
-                Status: <b>${o.status.toUpperCase()}</b><br>
-                <input type="text" id="resi-${doc.id}" placeholder="Input Resi" value="${o.resi || ''}">
-                <button class="btn-small" onclick="adminUpdateStatus('${doc.id}', 'proses')">Proses</button>
-                <button class="btn-small" onclick="adminUpdateStatus('${doc.id}', 'kirim')">Kirim</button>
-            </div>`;
-        });
-    });
-}
-
-async function adminUpdateStatus(id, stat) {
-    const resi = document.getElementById(`resi-${id}`).value;
-    await db.collection("orders").doc(id).update({ status: stat, resi: resi });
-    alert("Berhasil!");
-}
-
-async function adminSaveProduct() {
-  const name = document.getElementById("pName").value, price = parseInt(document.getElementById("pPrice").value), file = document.getElementById("pFile").files[0];
-  if(!name || !price) return alert("Isi data!");
-  showLoader(true);
-  try {
-    let imgUrl = "";
-    if(file) { const ref = storage.ref('produk/'+Date.now()); await ref.put(file); imgUrl = await ref.getDownloadURL(); }
-    await db.collection("produk").add({ nama: name, harga: price, gambar: imgUrl, createdAt: new Date() });
-    alert("Produk ditambah!");
-  } catch (e) { alert(e.message); }
-  showLoader(false);
-}
-
-function showLoader(show) { document.getElementById("loader").style.display = show ? "flex" : "none"; }
-function logout() { auth.signOut().then(() => location.reload()); }
-async function updateOrderStatus(id, status) { await db.collection("orders").doc(id).update({ status: status }); }
-
-function loadBanners() {
-    db.collection("banners").limit(3).onSnapshot(snap => {
-        const container = document.getElementById("bannerSlider"); container.innerHTML = "";
-        if(snap.empty) container.innerHTML = `<div class="banner-slide"><img src="https://via.placeholder.com/600x200?text=Promo+OKTSHOP17"></div>`;
-        snap.forEach(doc => { container.innerHTML += `<div class="banner-slide"><img src="${doc.data().url}"></div>`; });
-    });
-}
-
-loadKatalog(); loadBanners();
-let slideIdx = 0;
-setInterval(() => {
-    const slider = document.getElementById("bannerSlider");
-    if(!slider) return; slideIdx = (slideIdx + 1) % 3;
-    slider.style.transform = `translateX(-${slideIdx * 100}%)`;
-}, 4000);
-</script>
-
-<style>
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-.btn-small { padding: 5px 10px; font-size: 11px; cursor: pointer; margin: 5px 2px 0 0; }
-</style>
+<script src="script.js"></script>
 </body>
 </html>
