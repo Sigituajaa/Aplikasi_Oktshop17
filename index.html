@@ -1,131 +1,299 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>OKTSHOP17 | Official Store</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reseller Oktshop</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#111827;
+color:white;
+}
+
+/* LOGIN */
+#loginPage{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#111827;
+}
+
+.login-box{
+background:#1f2937;
+padding:30px;
+border-radius:12px;
+width:350px;
+}
+
+.login-box h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+.login-box input{
+width:100%;
+padding:12px;
+margin-bottom:12px;
+border:none;
+border-radius:8px;
+}
+
+.login-box button{
+width:100%;
+padding:12px;
+background:#22c55e;
+border:none;
+color:white;
+border-radius:8px;
+cursor:pointer;
+}
+
+/* DASHBOARD */
+#dashboard{
+display:none;
+}
+
+.topbar{
+height:60px;
+background:#1f2937;
+display:flex;
+align-items:center;
+padding:0 20px;
+font-size:24px;
+font-weight:bold;
+}
+
+.menu-btn{
+cursor:pointer;
+margin-right:15px;
+}
+
+.container{
+display:flex;
+}
+
+.sidebar{
+width:250px;
+background:#1f2937;
+height:calc(100vh - 60px);
+padding:20px;
+transition:0.3s;
+}
+
+.sidebar.hide{
+width:0;
+padding:0;
+overflow:hidden;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar li{
+padding:15px;
+margin-bottom:5px;
+background:#374151;
+border-radius:8px;
+cursor:pointer;
+}
+
+.content{
+flex:1;
+padding:20px;
+}
+
+.dashboard-title{
+font-size:28px;
+margin-bottom:20px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+margin-bottom:25px;
+}
+
+.card{
+padding:20px;
+border-radius:12px;
+}
+
+.green{
+background:#16a34a;
+}
+
+.orange{
+background:#f97316;
+}
+
+.blue{
+background:#2563eb;
+}
+
+.sky{
+background:#06b6d4;
+}
+
+.card h3{
+margin-bottom:10px;
+}
+
+.card p{
+font-size:28px;
+font-weight:bold;
+}
+
+.chart-box{
+background:#1f2937;
+padding:20px;
+border-radius:12px;
+}
+</style>
 </head>
+
 <body>
 
-<div id="loader">
-    <div class="spinner"></div>
-    <p>Memproses...</p>
+<!-- LOGIN -->
+<div id="loginPage">
+<div class="login-box">
+<h2>Login Admin</h2>
+
+<input type="text" id="userid" placeholder="ID Admin">
+
+<input type="password" id="password" placeholder="Password">
+
+<button onclick="login()">Masuk</button>
+</div>
 </div>
 
-<!-- Modal Auth -->
-<div id="modalAuth" class="modal">
-  <div class="modal-content">
-    <h3 id="authTitle">Masuk</h3>
-    <input type="text" id="authNama" placeholder="Nama Lengkap" style="display:none;">
-    <input type="email" id="authEmail" placeholder="Email">
-    <input type="password" id="authPass" placeholder="Password">
-    <button class="btn-action" onclick="submitAuth()">Konfirmasi</button>
-    <p id="switchAuthBtn" onclick="toggleAuthMode()">Belum punya akun? Daftar</p>
-    <button onclick="closeAuth()" class="btn-flat">Batal</button>
-  </div>
+<!-- DASHBOARD -->
+<div id="dashboard">
+
+<div class="topbar">
+<span class="menu-btn" onclick="toggleMenu()">☰</span>
+Reseller Oktshop
 </div>
 
-<header>
-  <a href="#" class="logo">OKTSHOP17</a>
-  <div id="user-status" onclick="openAuth('login')">Login / Daftar</div>
-</header>
+<div class="container">
 
-<!-- HOME VIEW -->
-<div id="view-home" class="view-section active-view">
-  <div class="banner-wrapper">
-    <div class="banner-container" id="bannerSlider"></div>
-  </div>
-  <div class="container">
-    <div class="section-title">Katalog Produk</div>
-    <div id="listProduk" class="product-grid"></div>
-  </div>
+<div class="sidebar" id="sidebar">
+<ul>
+<li>Nama Admin : Admin</li>
+<li>Pesanan Reseller</li>
+<li>Produk</li>
+
+<li>
+Pengaturan
+<br><br>
+Nama :
+<input type="text" placeholder="Update Nama">
+
+<br><br>
+
+No HP :
+<input type="text" placeholder="Nomor HP">
+
+<br><br>
+
+Alamat :
+<textarea style="width:100%;height:70px;"></textarea>
+
+</li>
+
+</ul>
 </div>
 
-<!-- CART VIEW -->
-<div id="view-cart" class="view-section">
-  <div class="container">
-    <div class="section-title">Keranjang Belanja</div>
-    <div class="info-box">
-      <div id="cartItems">Memuat...</div>
-      <div id="cartTotal" class="total-text">Total: Rp0</div>
-    </div>
+<div class="content">
 
-    <div id="checkout-form" style="display:none;">
-        <div class="section-title">Informasi Checkout</div>
-        <div class="info-box">
-            <label>Pilih Kurir:</label>
-            <select id="shipMethod">
-                <option value="JNT">JNT</option>
-                <option value="JNE">JNE</option>
-                <option value="SICEPAT">SICEPAT</option>
-                <option value="COD">Kurir Internal (COD)</option>
-            </select>
+<h2 class="dashboard-title">
+Dashboard Overview
+</h2>
 
-            <label>Metode Pembayaran:</label>
-            <select id="payMethod" onchange="toggleBuktiTransfer()">
-                <option value="Transfer Bank">Transfer Bank (Wajib Upload Bukti)</option>
-                <option value="COD">COD (Bayar di Tempat)</option>
-            </select>
-            
-            <div id="boxBuktiTransfer" class="upload-box">
-                <p>Upload Bukti Transfer (Max 1 Jam):</p>
-                <input type="file" id="buktiFile" accept="image/*">
-            </div>
+<div class="cards">
 
-            <button class="btn-action" onclick="processCheckout()">Buat Pesanan Sekarang</button>
-        </div>
-    </div>
-    
-    <div id="login-to-checkout" class="info-box" style="display:none; text-align:center;">
-        <p>Silahkan Login untuk checkout</p>
-        <button class="btn-action" onclick="openAuth('login')">Login</button>
-    </div>
-  </div>
+<div class="card green">
+<h3>Produk Terjual</h3>
+<p>250 Qty</p>
 </div>
 
-<!-- PROFILE VIEW -->
-<div id="view-profile" class="view-section">
-  <div class="container">
-    <div class="section-title">Data Profil</div>
-    <div class="info-box profile-card">
-        <label>Nama Lengkap:</label>
-        <input type="text" id="profNama">
-        <label>No. HP / WhatsApp:</label>
-        <input type="number" id="profHp">
-        <label>Alamat Lengkap Penerima:</label>
-        <textarea id="profAlamat" rows="3"></textarea>
-        <button class="btn-outline" onclick="updateProfile()">Simpan Perubahan</button>
-    </div>
-
-    <div class="section-title">Pesanan Saya</div>
-    <div id="userOrders">Memuat pesanan...</div>
-
-    <!-- Admin Panel -->
-    <div id="admin-panel" style="display:none;">
-      <div class="section-title">Panel Admin</div>
-      <div class="menu-item">
-        <div class="menu-header" onclick="toggleMenu('adm-pesanan')">Kelola Pesanan <span>+</span></div>
-        <div id="adm-pesanan" class="menu-content"><div id="adminOrderList"></div></div>
-      </div>
-    </div>
-
-    <button class="btn-action" onclick="logout()" style="background:#666; margin-top:30px;">Logout</button>
-  </div>
+<div class="card orange">
+<h3>Pendapatan Hari Ini</h3>
+<p>Rp 850.000</p>
 </div>
 
-<div class="bottom-nav">
-  <div class="nav-item active" onclick="showView('home', this)">🏠<br>Beranda</div>
-  <div class="nav-item" onclick="showView('cart', this)">🛒<br>Keranjang</div>
-  <div class="nav-item" onclick="showView('profile', this)">👤<br>Profil</div>
+<div class="card blue">
+<h3>Pendapatan Bulan Ini</h3>
+<p>Rp 12.500.000</p>
 </div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-<script src="script.js"></script>
+<div class="card sky">
+<h3>Pendapatan Tahun Ini</h3>
+<p>Rp 150.000.000</p>
+</div>
+
+</div>
+
+<div class="chart-box">
+<h3>Grafik Pendapatan</h3>
+<br>
+<canvas id="salesChart"></canvas>
+</div>
+
+</div>
+</div>
+</div>
+
+<script>
+
+function login(){
+
+let user=document.getElementById("userid").value;
+let pass=document.getElementById("password").value;
+
+if(user==="admin" && pass==="12345"){
+document.getElementById("loginPage").style.display="none";
+document.getElementById("dashboard").style.display="block";
+}else{
+alert("ID atau Password salah");
+}
+}
+
+function toggleMenu(){
+document.getElementById("sidebar").classList.toggle("hide");
+}
+
+const ctx=document.getElementById('salesChart');
+
+new Chart(ctx,{
+type:'line',
+data:{
+labels:['Jan','Feb','Mar','Apr','Mei','Jun','Jul'],
+datasets:[{
+label:'Pendapatan',
+data:[2000000,3500000,5000000,4200000,6500000,7000000,9000000],
+borderWidth:3,
+tension:0.4
+}]
+},
+options:{
+responsive:true
+}
+});
+
+</script>
+
 </body>
 </html>
